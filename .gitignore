@@ -4,4 +4,4 @@ obj/
 Properties/
 .env
 *.sln
-appsettings*
+.git
