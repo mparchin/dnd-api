@@ -1,0 +1,10 @@
+services:
+  api:
+    image: mparchin/dnd-api:${DOTNET_ENVIRONMENT}
+    build: .
+    container_name: dnd-api
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - 80:80

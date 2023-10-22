@@ -1,0 +1,7 @@
+Data/
+bin/
+obj/
+Properties/
+.env
+*.sln
+.git

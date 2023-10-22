@@ -1,0 +1,29 @@
+using api.Endpoints;
+using api.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace api
+{
+    public class Db : DbContext
+    {
+        public static string GetLocalDbConnection(WebApplicationBuilder builder) =>
+            $"Data Source={builder.Configuration.GetValue<string>("Local_Db_Path")}" +
+            $"{builder.Configuration.GetValue<string>("Local_Db_File")};";
+
+        public static string GetProductionDbConnetion(WebApplicationBuilder builder) =>
+            $"USER ID={builder.Configuration.GetValue<string>("Postgres_User")};" +
+            $"Password={builder.Configuration.GetValue<string>("Postgres_Password")};" +
+            $"Server={builder.Configuration.GetValue<string>("Postgres")};" +
+            $"Port={builder.Configuration.GetValue<string>("Postgres_Port")};" +
+            $"Database={builder.Configuration.GetValue<string>("Postgres_Db")};" +
+            $"Integrated Security=true;" +
+            $"Pooling=true;";
+
+        public Db(DbContextOptions<Db> options) : base(options) { }
+        public DbSet<Spell> Spells { get; set; }
+        public DbSet<School> Schools { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Condition> Conditions { get; set; }
+        public DbSet<SpellTag> SpellTags { get; set; }
+    }
+}
