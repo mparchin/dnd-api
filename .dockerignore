@@ -1,7 +1,0 @@
-Data/
-bin/
-obj/
-Properties/
-.env
-*.sln
-appsettings*
