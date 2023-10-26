@@ -6,10 +6,8 @@ if [ "$1" = "production" ]
     BRANCH="development"
 fi
 SERVER="91.107.242.150"
-ssh $SERVER "cd api-dnd && \
+ssh $SERVER "cd dnd-api && \
 git switch $BRANCH && \
 git pull && \
-./build.sh $BRANCH --push && \
 cd ../ && \
-docker compose pull && \
-docker compose up -d"
+docker compose up -d --build"

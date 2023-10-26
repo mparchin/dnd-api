@@ -1,6 +1,9 @@
+using System.Net.Http.Headers;
 using api.Schemas;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft;
+using Newtonsoft.Json;
 
 namespace api.Endpoints
 {
@@ -9,21 +12,14 @@ namespace api.Endpoints
         public static void MapSpellsApi(this RouteGroupBuilder group)
         {
             group.MapGet("/", GetAllAsync);
-            group.MapGet("/Count", CountAsync);
         }
 
         private static async Task<Ok<SpellSchema[]>> GetAllAsync(Db db) =>
-            TypedResults.Ok((await db.Spells
-                                    .Include(spell => spell.RestrictedClasses)
-                                    .Include(spell => spell.RelatedConditions)
-                                    .Include(spell => spell.School)
-                                    .Include(spell => spell.SpellTags)
-                                    .ToArrayAsync())
-                                    .Select(spell => new SpellSchema(spell))
-                                    .ToArray());
-
-        private static async Task<Ok<int>> CountAsync(Db db) =>
-            TypedResults.Ok(await db.Spells.CountAsync());
-
+            TypedResults.Ok((await db.Spells.Include(spell => spell.RestrictedClasses)
+                                            .Include(spell => spell.RelatedConditions)
+                                            .Include(spell => spell.School)
+                                            .Include(spell => spell.SpellTags).ToArrayAsync())
+                                            .Select(spell => new SpellSchema(spell))
+                                            .ToArray());
     }
 }
