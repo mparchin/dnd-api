@@ -5,3 +5,6 @@ Properties/
 .env
 *.sln
 appsettings*
+.git*
+*.sh
+Dockerfile
