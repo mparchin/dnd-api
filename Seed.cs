@@ -87,7 +87,7 @@ namespace api
                           .ToList()
                           .ForEach(i => spell.SpellTags.Add(db.SpellTags.Next()!));
                 spell.SavingThrow = _rnd.NextBool() ? _rnd.Next<SavingThrows>() : null;
-                spell.DamageType = _rnd.NextBool() ? _rnd.Next<DamageTypes>() : null;
+                spell.DamageTypes = Enumerable.Range(0, _rnd.Next(0, 4)).Select(i => _rnd.Next<DamageTypes>()).ToArray();
                 spell.Action = _rnd.Next<Actions>();
                 spell.LongerAction = _rnd.NextBool() ? _rnd.NextString() : null;
                 spell.Range = _rnd.NextString();
@@ -103,7 +103,7 @@ namespace api
                 Enumerable.Range(0, _rnd.Next(0, 6))
                           .ToList()
                           .ForEach(i => spell.RelatedConditions.Add(db.Conditions.Next()!));
-                spell.SpellList = _rnd.Next<SpellLists>();
+                spell.SpellLists = Enumerable.Range(0, _rnd.Next(1, 4)).Select(i => _rnd.Next<SpellLists>()).ToArray();
             });
     }
 }

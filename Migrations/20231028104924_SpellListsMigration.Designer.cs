@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api;
@@ -11,9 +12,11 @@ using api;
 namespace api.Migrations
 {
     [DbContext(typeof(Db))]
-    partial class DbModelSnapshot : ModelSnapshot
+    [Migration("20231028104924_SpellListsMigration")]
+    partial class SpellListsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,9 +142,8 @@ namespace api.Migrations
                     b.Property<string>("DamageFormula")
                         .HasColumnType("text");
 
-                    b.Property<string>("DamageTypesString")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int?>("DamageType")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
