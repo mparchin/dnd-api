@@ -12,12 +12,12 @@ namespace api.Controllers
             spell.Level = updatedSpell.Level;
             spell.Book = updatedSpell.Book;
             spell.SchoolId = updatedSpell.SchoolId;
-            spell.SpellList = updatedSpell.SpellList;
+            spell.SpellLists = updatedSpell.SpellLists;
             spell.HasVerbalComponent = updatedSpell.HasVerbalComponent;
             spell.HasSomaticComponent = updatedSpell.HasSomaticComponent;
             spell.Materials = updatedSpell.Materials;
             spell.SavingThrow = updatedSpell.SavingThrow;
-            spell.DamageType = updatedSpell.DamageType;
+            spell.DamageTypes = updatedSpell.DamageTypes;
             spell.Action = updatedSpell.Action;
             spell.Range = updatedSpell.Range;
             spell.Duration = updatedSpell.Duration;

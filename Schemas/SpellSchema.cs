@@ -15,7 +15,7 @@ namespace api.Schemas
         public string? Materials { get; set; }
         public string[] SpellTags { get; set; } = Array.Empty<string>();
         public string? SavingThrow { get; set; }
-        public string? DamageType { get; set; }
+        public string? DamageTypes { get; set; }
         public string Action { get; set; } = "";
         public string? LongerAction { get; set; }
         public string Range { get; set; } = "";
@@ -37,13 +37,13 @@ namespace api.Schemas
             Level = model.Level;
             Book = model.Book;
             SchoolName = model.School?.Name;
-            SpellListName = model.SpellList.ToString();
+            SpellListName = string.Join(",", model.SpellLists.Select(s => s.ToString()));
             HasVerbalComponent = model.HasVerbalComponent;
             HasSomaticComponent = model.HasSomaticComponent;
             Materials = model.Materials;
             SpellTags = model.SpellTags?.Select(tags => tags.Name).ToArray() ?? Array.Empty<string>();
             SavingThrow = model.SavingThrow.ToString();
-            DamageType = model.DamageType.ToString();
+            DamageTypes = model.DamageTypes.Any() ? string.Join(",", model.DamageTypes.Select(s => s.ToString())) : null;
             Action = model.Action.ToString();
             LongerAction = model.LongerAction;
             Range = model.Range;

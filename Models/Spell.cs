@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace api.Models
 {
@@ -11,7 +13,14 @@ namespace api.Models
         public string? Book { get; set; }
         public int? SchoolId { get; set; }
         public School? School { get; set; }
-        public SpellLists SpellList { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string SpellListsString { get; set; } = "[]";
+        [NotMapped]
+        public SpellLists[] SpellLists
+        {
+            get => JsonConvert.DeserializeObject<SpellLists[]>(SpellListsString) ?? Array.Empty<SpellLists>();
+            set => SpellListsString = JsonConvert.SerializeObject(value);
+        }
         public bool HasVerbalComponent { get; set; }
         public bool HasSomaticComponent { get; set; }
         public bool HasMaterialComponent =>
@@ -19,7 +28,7 @@ namespace api.Models
         public string? Materials { get; set; }
         public List<SpellTag> SpellTags { get; } = new();
         [NotMapped]
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         private int[]? _spellTagIds;
         [NotMapped]
         public int[] SpellTagIds
@@ -28,7 +37,15 @@ namespace api.Models
             set => _spellTagIds = value;
         }
         public SavingThrows? SavingThrow { get; set; }
-        public DamageTypes? DamageType { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string DamageTypesString { get; set; } = "[]";
+        [NotMapped]
+        public DamageTypes[] DamageTypes
+        {
+            get => JsonConvert.DeserializeObject<DamageTypes[]>(DamageTypesString)
+                ?? Array.Empty<DamageTypes>();
+            set => DamageTypesString = JsonConvert.SerializeObject(value);
+        }
         public Actions Action { get; set; }
         public string? LongerAction { get; set; }
         public string Range { get; set; } = "";
@@ -37,7 +54,7 @@ namespace api.Models
         public bool IsRitual { get; set; }
         public List<Class> RestrictedClasses { get; } = new();
         [NotMapped]
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         private int[]? _restrictedClasses;
         [NotMapped]
         public int[] RestrictedClassIds
@@ -50,7 +67,7 @@ namespace api.Models
         public string? DamageFormula { get; set; }
         public List<Condition> RelatedConditions { get; } = new();
         [NotMapped]
-        [JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
         private int[]? _relatedConditionIds;
         [NotMapped]
         public int[] RelatedConditionIds
