@@ -1,48 +1,50 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class SpellsMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Class",
+                name: "Classes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Class", x => x.Id);
+                    table.PrimaryKey("PK_Classes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Condition",
+                name: "Conditions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Condition", x => x.Id);
+                    table.PrimaryKey("PK_Conditions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Schools",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,41 +52,43 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SpellTag",
+                name: "SpellTags",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpellTag", x => x.Id);
+                    table.PrimaryKey("PK_SpellTags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Spells",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Level = table.Column<int>(type: "INTEGER", nullable: false),
-                    Book = table.Column<string>(type: "TEXT", nullable: false),
-                    SchoolId = table.Column<int>(type: "INTEGER", nullable: true),
-                    HasVerbalComponent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    HasSomaticComponent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Materials = table.Column<string>(type: "TEXT", nullable: false),
-                    SavingThrow = table.Column<int>(type: "INTEGER", nullable: true),
-                    DamageType = table.Column<int>(type: "INTEGER", nullable: true),
-                    Action = table.Column<int>(type: "INTEGER", nullable: false),
-                    LongerAction = table.Column<string>(type: "TEXT", nullable: false),
-                    Range = table.Column<string>(type: "TEXT", nullable: false),
-                    Duration = table.Column<string>(type: "TEXT", nullable: false),
-                    IsConcentration = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsRitual = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    HigherLevelDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    DamageFormula = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Book = table.Column<string>(type: "text", nullable: true),
+                    SchoolId = table.Column<int>(type: "integer", nullable: true),
+                    SpellList = table.Column<int>(type: "integer", nullable: false),
+                    HasVerbalComponent = table.Column<bool>(type: "boolean", nullable: false),
+                    HasSomaticComponent = table.Column<bool>(type: "boolean", nullable: false),
+                    Materials = table.Column<string>(type: "text", nullable: true),
+                    SavingThrow = table.Column<int>(type: "integer", nullable: true),
+                    DamageType = table.Column<int>(type: "integer", nullable: true),
+                    Action = table.Column<int>(type: "integer", nullable: false),
+                    LongerAction = table.Column<string>(type: "text", nullable: true),
+                    Range = table.Column<string>(type: "text", nullable: false),
+                    Duration = table.Column<string>(type: "text", nullable: false),
+                    IsConcentration = table.Column<bool>(type: "boolean", nullable: false),
+                    IsRitual = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    HigherLevelDescription = table.Column<string>(type: "text", nullable: true),
+                    DamageFormula = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,16 +104,16 @@ namespace api.Migrations
                 name: "ClassSpell",
                 columns: table => new
                 {
-                    RestrictedClassesId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RestrictedSpellsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    RestrictedClassesId = table.Column<int>(type: "integer", nullable: false),
+                    RestrictedSpellsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClassSpell", x => new { x.RestrictedClassesId, x.RestrictedSpellsId });
                     table.ForeignKey(
-                        name: "FK_ClassSpell_Class_RestrictedClassesId",
+                        name: "FK_ClassSpell_Classes_RestrictedClassesId",
                         column: x => x.RestrictedClassesId,
-                        principalTable: "Class",
+                        principalTable: "Classes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -124,16 +128,16 @@ namespace api.Migrations
                 name: "ConditionSpell",
                 columns: table => new
                 {
-                    RelatedConditionsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RelatedSpellsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    RelatedConditionsId = table.Column<int>(type: "integer", nullable: false),
+                    RelatedSpellsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ConditionSpell", x => new { x.RelatedConditionsId, x.RelatedSpellsId });
                     table.ForeignKey(
-                        name: "FK_ConditionSpell_Condition_RelatedConditionsId",
+                        name: "FK_ConditionSpell_Conditions_RelatedConditionsId",
                         column: x => x.RelatedConditionsId,
-                        principalTable: "Condition",
+                        principalTable: "Conditions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -148,16 +152,16 @@ namespace api.Migrations
                 name: "SpellSpellTag",
                 columns: table => new
                 {
-                    SpellTagsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SpellsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SpellTagsId = table.Column<int>(type: "integer", nullable: false),
+                    SpellsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SpellSpellTag", x => new { x.SpellTagsId, x.SpellsId });
                     table.ForeignKey(
-                        name: "FK_SpellSpellTag_SpellTag_SpellTagsId",
+                        name: "FK_SpellSpellTag_SpellTags_SpellTagsId",
                         column: x => x.SpellTagsId,
-                        principalTable: "SpellTag",
+                        principalTable: "SpellTags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -202,13 +206,13 @@ namespace api.Migrations
                 name: "SpellSpellTag");
 
             migrationBuilder.DropTable(
-                name: "Class");
+                name: "Classes");
 
             migrationBuilder.DropTable(
-                name: "Condition");
+                name: "Conditions");
 
             migrationBuilder.DropTable(
-                name: "SpellTag");
+                name: "SpellTags");
 
             migrationBuilder.DropTable(
                 name: "Spells");

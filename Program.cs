@@ -14,8 +14,7 @@ builder.Logging.AddConsole();
 if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<Db>(options =>
     {
-        Directory.CreateDirectory(builder.Configuration.GetValue<string>("Local_Db_Path") ?? "");
-        options.UseSqlite(Db.GetLocalDbConnection(builder));
+        options.UseNpgsql(Db.GetProductionDbConnetion(builder));
         options.EnableSensitiveDataLogging();
     });
 else

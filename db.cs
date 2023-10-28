@@ -11,11 +11,11 @@ namespace api
             $"{builder.Configuration.GetValue<string>("Local_Db_File")};";
 
         public static string GetProductionDbConnetion(WebApplicationBuilder builder) =>
-            $"USER ID={builder.Configuration.GetValue<string>("Postgres_User")};" +
-            $"Password={builder.Configuration.GetValue<string>("Postgres_Password")};" +
-            $"Server={builder.Configuration.GetValue<string>("Postgres")};" +
-            $"Port={builder.Configuration.GetValue<string>("Postgres_Port")};" +
-            $"Database={builder.Configuration.GetValue<string>("Postgres_Db")};" +
+            $"USER ID={builder.Configuration.GetValue<string>("Postgres_User") ?? "postgres"};" +
+            $"Password={builder.Configuration.GetValue<string>("Postgres_Password") ?? "12345"};" +
+            $"Server={builder.Configuration.GetValue<string>("Postgres") ?? "localhost"};" +
+            $"Port={builder.Configuration.GetValue<string>("Postgres_Port") ?? "5432"};" +
+            $"Database={builder.Configuration.GetValue<string>("Postgres_Db") ?? "dnd"};" +
             $"Integrated Security=true;" +
             $"Pooling=true;";
 
