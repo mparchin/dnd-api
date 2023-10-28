@@ -45,12 +45,13 @@ namespace api
         private static async Task SeedEntityAsync<TEntity>(this DbContext db, int count, Action<TEntity> fill)
             where TEntity : class, IModel, new()
         {
-            await Task.WhenAll(CreateFakeEntities(count, fill).Select(async entity =>
+            CreateFakeEntities(count, fill).ToList().ForEach(entity =>
             {
-                if ((await db.FindAsync<TEntity>(entity.Id)) is { })
+                if (db.Find<TEntity>(entity.Id) is { })
                     return;
-                await db.AddAsync(entity);
-            }));
+                entity.Id = default;
+                db.Add(entity);
+            });
             await db.SaveChangesAsync();
         }
 
@@ -58,7 +59,11 @@ namespace api
             db.SeedEntityAsync<Class>(10, @class => @class.Name = _rnd.NextString());
 
         public static Task SeedConditionsAsync(this DbContext db) =>
-            db.SeedEntityAsync<Condition>(5, condition => condition.Name = _rnd.NextString());
+            db.SeedEntityAsync<Condition>(5, condition =>
+            {
+                condition.Name = _rnd.NextString();
+                condition.Description = _rnd.NextWords();
+            });
 
         public static Task SeedSchoolsAsync(this DbContext db) =>
             db.SeedEntityAsync<School>(6, school => school.Name = _rnd.NextString());
