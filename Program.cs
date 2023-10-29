@@ -71,10 +71,7 @@ app.UseCors(builder =>
     builder.AllowAnyOrigin();
 });
 
-// app.MapGet("/", (IWebHostEnvironment environment, IConfiguration configuration) => $"Hello {environment.EnvironmentName} World! \rdev db:{Db.GetLocalDbConnection(builder)}\rpro db:{Db.GetProductionDbConnetion(builder)}");
-
 app.MapGroup("/spells").MapSpellsApi();
-app.MapGroup("/spelltags").MapSpellTagsApi();
 app.MapControllers();
 
 app.Run();
