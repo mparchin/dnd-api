@@ -23,11 +23,38 @@ namespace api
         private static TEntity? Next<TEntity>(this IQueryable<TEntity> entities) =>
             entities.OrderBy(entity => EF.Functions.Random()).FirstOrDefault();
 
+        private static List<TEntity> Pick<TEntity>(this IQueryable<TEntity> entities, int number)
+        {
+            var ret = new List<TEntity>();
+            while (ret.Count != number)
+            {
+                var candidate = entities.Next();
+                if (candidate is null || ret.Contains(candidate))
+                    continue;
+                ret.Add(candidate);
+            }
+            return ret;
+        }
+
         private static TEnum Next<TEnum>(this Random random)
             where TEnum : Enum
         {
             var vals = typeof(TEnum).GetEnumValues();
             return (TEnum)vals.GetValue(random.Next(0, vals.Length))!;
+        }
+
+        private static List<TEnum> Pick<TEnum>(this Random random, int number)
+            where TEnum : Enum
+        {
+            var ret = new List<TEnum>();
+            while (ret.Count != number)
+            {
+                var candidate = random.Next<TEnum>();
+                if (ret.Contains(candidate))
+                    continue;
+                ret.Add(candidate);
+            }
+            return ret;
         }
 
         private static IEnumerable<TEntity> CreateFakeEntities<TEntity>(int count, Action<TEntity> fill)
@@ -83,27 +110,21 @@ namespace api
                 spell.Materials = (!spell.HasVerbalComponent && !spell.HasSomaticComponent) || _rnd.NextBool()
                     ? _rnd.NextWords(10)
                     : null;
-                Enumerable.Range(0, _rnd.Next(1, 6))
-                          .ToList()
-                          .ForEach(i => spell.SpellTags.Add(db.SpellTags.Next()!));
+                db.SpellTags.Pick(_rnd.Next(1, 6)).ForEach(spell.SpellTags.Add);
                 spell.SavingThrow = _rnd.NextBool() ? _rnd.Next<SavingThrows>() : null;
-                spell.DamageTypes = Enumerable.Range(0, _rnd.Next(0, 4)).Select(i => _rnd.Next<DamageTypes>()).ToArray();
+                spell.DamageTypes = _rnd.Pick<DamageTypes>(_rnd.Next(0, 4)).ToArray();
                 spell.Action = _rnd.Next<Actions>();
                 spell.LongerAction = _rnd.NextBool() ? _rnd.NextString() : null;
                 spell.Range = _rnd.NextString();
                 spell.Duration = _rnd.NextString();
                 spell.IsConcentration = _rnd.NextBool();
                 spell.IsRitual = _rnd.NextBool();
-                Enumerable.Range(0, _rnd.Next(0, 6))
-                          .ToList()
-                          .ForEach(i => spell.RestrictedClasses.Add(db.Classes.Next()!));
+                db.Classes.Pick(_rnd.Next(0, 6)).ForEach(spell.RestrictedClasses.Add);
                 spell.Description = _rnd.NextWords(250);
                 spell.HigherLevelDescription = _rnd.NextBool() ? _rnd.NextWords(50) : null;
                 spell.DamageFormula = null; // TODO: later
-                Enumerable.Range(0, _rnd.Next(0, 6))
-                          .ToList()
-                          .ForEach(i => spell.RelatedConditions.Add(db.Conditions.Next()!));
-                spell.SpellLists = Enumerable.Range(0, _rnd.Next(1, 4)).Select(i => _rnd.Next<SpellLists>()).ToArray();
+                db.Conditions.Pick(_rnd.Next(0, 6)).ForEach(spell.RelatedConditions.Add);
+                spell.SpellLists = _rnd.Pick<SpellLists>(_rnd.Next(1, 4)).ToArray();
             });
     }
 }

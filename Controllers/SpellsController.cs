@@ -19,6 +19,7 @@ namespace api.Controllers
             spell.SavingThrow = updatedSpell.SavingThrow;
             spell.DamageTypes = updatedSpell.DamageTypes;
             spell.Action = updatedSpell.Action;
+            spell.LongerAction = updatedSpell.LongerAction;
             spell.Range = updatedSpell.Range;
             spell.Duration = updatedSpell.Duration;
             spell.IsConcentration = updatedSpell.IsConcentration;
