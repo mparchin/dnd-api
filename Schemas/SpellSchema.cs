@@ -26,7 +26,7 @@ namespace api.Schemas
         public string Description { get; set; } = "";
         public string? HigherLevelDescription { get; set; }
         public string? DamageFormula { get; set; }
-        public string[] RelatedConditions { get; set; } = Array.Empty<string>();
+        public ConditionSchema[] RelatedConditions { get; set; } = Array.Empty<ConditionSchema>();
 
         public SpellSchema() { }
 
@@ -54,7 +54,8 @@ namespace api.Schemas
             Description = model.Description;
             HigherLevelDescription = model.HigherLevelDescription;
             DamageFormula = model.DamageFormula;
-            RelatedConditions = model.RelatedConditions?.Select(condition => condition.Name).ToArray() ?? Array.Empty<string>();
+            RelatedConditions = model.RelatedConditions?.Select(condition => new ConditionSchema(condition)).ToArray()
+                 ?? Array.Empty<ConditionSchema>();
         }
     }
 }
