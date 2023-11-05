@@ -14,12 +14,19 @@ namespace api.Endpoints
             group.MapGet("/", GetAllAsync);
         }
 
-        private static async Task<Ok<SpellSchema[]>> GetAllAsync(Db db) =>
-            TypedResults.Ok((await db.Spells.Include(spell => spell.RestrictedClasses)
-                                            .Include(spell => spell.RelatedConditions)
-                                            .Include(spell => spell.School)
-                                            .Include(spell => spell.SpellTags).ToArrayAsync())
-                                            .Select(spell => new SpellSchema(spell))
-                                            .ToArray());
+        private static async Task<Ok<SpellSchema[]>?> GetAllAsync(Db db, long lastTime = long.MinValue)
+        {
+            var spells = (await db.Spells.Include(spell => spell.RestrictedClasses)
+                                        .Include(spell => spell.RelatedConditions)
+                                        .Include(spell => spell.School)
+                                        .Include(spell => spell.SpellTags)
+                                        .ToArrayAsync())
+                                        .Select(spell => new SpellSchema(spell))
+                                        .ToArray();
+            if (spells.Max(spell => spell.Time) > lastTime)
+                return TypedResults.Ok(spells);
+            else
+                return null;
+        }
     }
 }

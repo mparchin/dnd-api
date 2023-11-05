@@ -26,6 +26,7 @@ namespace api.Schemas
         public string Description { get; set; } = "";
         public string? HigherLevelDescription { get; set; }
         public string? DamageFormula { get; set; }
+        public long Time { get; set; }
         public ConditionSchema[] RelatedConditions { get; set; } = Array.Empty<ConditionSchema>();
 
         public SpellSchema() { }
@@ -56,6 +57,7 @@ namespace api.Schemas
             DamageFormula = model.DamageFormula;
             RelatedConditions = model.RelatedConditions?.Select(condition => new ConditionSchema(condition)).ToArray()
                  ?? Array.Empty<ConditionSchema>();
+            Time = ((DateTimeOffset)(model.UpdatedOn ?? new DateTime(1997, 1, 1))).ToUniversalTime().ToUnixTimeMilliseconds();
         }
     }
 }

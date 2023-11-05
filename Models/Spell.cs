@@ -75,5 +75,6 @@ namespace api.Models
             get => _relatedConditionIds ?? RelatedConditions.Select(rc => rc.Id).ToArray();
             set => _relatedConditionIds = value;
         }
+        public DateTime? UpdatedOn { get; set; } = DateTime.Now;
     }
 }

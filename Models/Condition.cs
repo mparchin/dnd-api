@@ -6,5 +6,6 @@ namespace api.Models
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public List<Spell> RelatedSpells { get; } = new();
+        public DateTime? UpdatedOn { get; set; } = DateTime.Now;
     }
 }
