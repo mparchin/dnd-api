@@ -47,6 +47,7 @@ namespace api.Controllers
             var entity = new TEntity();
             await DbSet.AddAsync(entity);
             _updateEntity.Invoke(entity, result);
+            entity.UpdatedOn = DateTime.Now;
             await Db.SaveChangesAsync();
             return Created(entity);
         }
@@ -59,6 +60,7 @@ namespace api.Controllers
 
             _updateEntity.Invoke(entity, updatedEntity);
 
+            entity.UpdatedOn = DateTime.Now;
             await Db.SaveChangesAsync();
             return Updated(entity);
         }
@@ -75,6 +77,7 @@ namespace api.Controllers
             else
                 _logger.LogCritical("patch input is null");
 
+            entity.UpdatedOn = DateTime.Now;
             await Db.SaveChangesAsync();
             return Updated(entity);
         }
