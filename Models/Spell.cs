@@ -14,6 +14,8 @@ namespace api.Models
         public int? SchoolId { get; set; }
         public School? School { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+
         public string SpellListsString { get; set; } = "[]";
         [NotMapped]
         public SpellLists[] SpellLists
@@ -29,6 +31,8 @@ namespace api.Models
         public List<SpellTag> SpellTags { get; } = new();
         [NotMapped]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+
         private int[]? _spellTagIds;
         [NotMapped]
         public int[] SpellTagIds
@@ -38,6 +42,8 @@ namespace api.Models
         }
         public SavingThrows? SavingThrow { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+
         public string DamageTypesString { get; set; } = "[]";
         [NotMapped]
         public DamageTypes[] DamageTypes
@@ -55,6 +61,7 @@ namespace api.Models
         public List<Class> RestrictedClasses { get; } = new();
         [NotMapped]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         private int[]? _restrictedClasses;
         [NotMapped]
         public int[] RestrictedClassIds
@@ -68,6 +75,7 @@ namespace api.Models
         public List<Condition> RelatedConditions { get; } = new();
         [NotMapped]
         [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         private int[]? _relatedConditionIds;
         [NotMapped]
         public int[] RelatedConditionIds
@@ -75,6 +83,8 @@ namespace api.Models
             get => _relatedConditionIds ?? RelatedConditions.Select(rc => rc.Id).ToArray();
             set => _relatedConditionIds = value;
         }
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; } = DateTime.Now;
     }
 }
