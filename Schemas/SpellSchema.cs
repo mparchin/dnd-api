@@ -57,7 +57,7 @@ namespace api.Schemas
             DamageFormula = model.DamageFormula;
             RelatedConditions = model.RelatedConditions?.Select(condition => new ConditionSchema(condition)).ToArray()
                  ?? Array.Empty<ConditionSchema>();
-            Time = ((DateTimeOffset)(model.UpdatedOn ?? new DateTime(1997, 1, 1))).ToUniversalTime().ToUnixTimeMilliseconds();
+            Time = Convert.ToInt64(((model.UpdatedOn ?? new DateTime(2020, 1, 1)).ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds);
         }
     }
 }

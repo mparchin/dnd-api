@@ -1,9 +1,5 @@
-using System.Net.Http.Headers;
 using api.Schemas;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft;
-using Newtonsoft.Json;
 
 namespace api.Endpoints
 {
@@ -14,7 +10,7 @@ namespace api.Endpoints
             group.MapGet("/", GetAllAsync);
         }
 
-        private static async Task<Ok<SpellSchema[]>?> GetAllAsync(Db db, long lastTime = long.MinValue)
+        private static async Task<IResult> GetAllAsync(Db db, long lastTime = long.MinValue)
         {
             var spells = (await db.Spells.Include(spell => spell.RestrictedClasses)
                                         .Include(spell => spell.RelatedConditions)
@@ -26,7 +22,7 @@ namespace api.Endpoints
             if (spells.Max(spell => spell.Time) > lastTime)
                 return TypedResults.Ok(spells);
             else
-                return null;
+                return TypedResults.NoContent();
         }
     }
 }

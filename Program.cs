@@ -71,6 +71,7 @@ app.UseCors(builder =>
     builder.AllowAnyOrigin();
 });
 
+
 app.MapGroup("/spells").MapSpellsApi();
 app.MapControllers();
 
