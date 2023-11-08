@@ -9,5 +9,7 @@ namespace api.Models
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; } = DateTime.Now;
+        public List<Feature> Features { get; } = new();
+
     }
 }
