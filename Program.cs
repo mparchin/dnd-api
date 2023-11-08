@@ -28,6 +28,7 @@ modelBuilder.EntitySet<Condition>("Conditions");
 modelBuilder.EntitySet<School>("Schools");
 modelBuilder.EntitySet<SpellTag>("SpellTags");
 modelBuilder.EntitySet<Spell>("Spells");
+modelBuilder.EntitySet<Feature>("Features");
 modelBuilder.EnableLowerCamelCase();
 
 builder.Services.AddControllers()
@@ -74,6 +75,7 @@ app.UseCors(builder =>
 
 app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
+app.MapGroup("/features").MapFeaturesApi();
 app.MapControllers();
 
 app.Run();

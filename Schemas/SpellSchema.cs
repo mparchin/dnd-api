@@ -58,6 +58,9 @@ namespace api.Schemas
             RelatedConditions = model.RelatedConditions?.Select(condition => new ConditionSchema(condition)).ToArray()
                  ?? Array.Empty<ConditionSchema>();
             Time = Convert.ToInt64(((model.UpdatedOn ?? new DateTime(2020, 1, 1)).ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds);
+            var maxTimeConditions = RelatedConditions.Max(condition => condition.Time);
+            if (maxTimeConditions > Time)
+                Time = maxTimeConditions;
         }
     }
 }
