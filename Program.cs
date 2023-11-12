@@ -76,6 +76,7 @@ app.UseCors(builder =>
 app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
 app.MapGroup("/features").MapFeaturesApi();
+app.MapGroup("/Feats").MapFeatsApi();
 app.MapControllers();
 
 app.Run();
