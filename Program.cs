@@ -29,6 +29,7 @@ modelBuilder.EntitySet<School>("Schools");
 modelBuilder.EntitySet<SpellTag>("SpellTags");
 modelBuilder.EntitySet<Spell>("Spells");
 modelBuilder.EntitySet<Feature>("Features");
+modelBuilder.EntitySet<Feat>("Feats");
 modelBuilder.EnableLowerCamelCase();
 
 builder.Services.AddControllers()
