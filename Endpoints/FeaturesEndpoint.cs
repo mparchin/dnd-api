@@ -15,7 +15,7 @@ namespace api.Endpoints
             var features = (await db.Features.ToArrayAsync())
                                         .Select(feature => new FeaturesSchema(feature))
                                         .ToArray();
-            if (features.Max(spell => spell.Time) > lastTime)
+            if (features.Any() && features.Max(spell => spell.Time) > lastTime)
                 return TypedResults.Ok(features);
             else
                 return TypedResults.NoContent();

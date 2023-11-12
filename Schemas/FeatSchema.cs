@@ -7,7 +7,7 @@ namespace api.Schemas
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public int Level { get; set; }
-        public string Prerequisite { get; set; } = "";
+        public string? Prerequisite { get; set; }
 
         public FeatSchema(Feat feat) : base(feat)
         {

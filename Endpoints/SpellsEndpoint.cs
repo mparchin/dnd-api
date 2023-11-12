@@ -19,7 +19,7 @@ namespace api.Endpoints
                                         .ToArrayAsync())
                                         .Select(spell => new SpellSchema(spell))
                                         .ToArray();
-            if (spells.Max(spell => spell.Time) > lastTime)
+            if (spells.Any() && spells.Max(spell => spell.Time) > lastTime)
                 return TypedResults.Ok(spells);
             else
                 return TypedResults.NoContent();
