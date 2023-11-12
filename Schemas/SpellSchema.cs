@@ -1,8 +1,9 @@
+using api.Models;
+
 namespace api.Schemas
 {
-    public class SpellSchema
+    public class SpellSchema : BaseSchema<Spell>
     {
-        public int Id { get; set; }
         public string Name { get; set; } = "";
         public int Level { get; set; }
         public string? Book { get; set; }
@@ -26,14 +27,10 @@ namespace api.Schemas
         public string Description { get; set; } = "";
         public string? HigherLevelDescription { get; set; }
         public string? DamageFormula { get; set; }
-        public long Time { get; set; }
         public ConditionSchema[] RelatedConditions { get; set; } = Array.Empty<ConditionSchema>();
 
-        public SpellSchema() { }
-
-        public SpellSchema(Models.Spell model)
+        public SpellSchema(Spell model) : base(model)
         {
-            Id = model.Id;
             Name = model.Name;
             Level = model.Level;
             Book = model.Book;
@@ -57,7 +54,7 @@ namespace api.Schemas
             DamageFormula = model.DamageFormula;
             RelatedConditions = model.RelatedConditions?.Select(condition => new ConditionSchema(condition)).ToArray()
                  ?? Array.Empty<ConditionSchema>();
-            Time = Convert.ToInt64(((model.UpdatedOn ?? new DateTime(2020, 1, 1)).ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds);
+
             if (!RelatedConditions.Any())
                 return;
             var maxTimeConditions = RelatedConditions.Max(condition => condition.Time);

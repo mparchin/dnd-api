@@ -126,5 +126,15 @@ namespace api
                 db.Conditions.Pick(_rnd.Next(0, 6)).ForEach(spell.RelatedConditions.Add);
                 spell.SpellLists = _rnd.Pick<SpellLists>(_rnd.Next(1, 4)).ToArray();
             });
+
+        public static Task SeedFeatsAsync(this Db db) =>
+            db.SeedEntityAsync<Feat>(100, feat =>
+            {
+                feat.Name = _rnd.NextString();
+                feat.Level = _rnd.Next(1, 4);
+                feat.Level = feat.Level == 1 ? 1 : feat.Level == 2 ? 4 : 20;
+                feat.Description = _rnd.NextWords(100);
+                feat.Prerequisite = _rnd.NextBool() ? _rnd.NextString() : "";
+            });
     }
 }

@@ -29,6 +29,7 @@ modelBuilder.EntitySet<School>("Schools");
 modelBuilder.EntitySet<SpellTag>("SpellTags");
 modelBuilder.EntitySet<Spell>("Spells");
 modelBuilder.EntitySet<Feature>("Features");
+modelBuilder.EntitySet<Feat>("Feats");
 modelBuilder.EnableLowerCamelCase();
 
 builder.Services.AddControllers()
@@ -59,6 +60,7 @@ using (var scope = app.Services.CreateScope())
             await db.SeedSchoolsAsync();
             await db.SeedSpellTagsAsync();
             await db.SeedSpellsAsync();
+            await db.SeedFeatsAsync();
         }
     }
 }
@@ -76,6 +78,7 @@ app.UseCors(builder =>
 app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
 app.MapGroup("/features").MapFeaturesApi();
+app.MapGroup("/Feats").MapFeatsApi();
 app.MapControllers();
 
 app.Run();

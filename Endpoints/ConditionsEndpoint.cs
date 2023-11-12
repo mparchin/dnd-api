@@ -15,7 +15,7 @@ namespace api.Endpoints
             var conditions = (await db.Conditions.ToArrayAsync())
                                         .Select(spell => new ConditionSchema(spell))
                                         .ToArray();
-            if (conditions.Max(spell => spell.Time) > lastTime)
+            if (conditions.Any() && conditions.Max(spell => spell.Time) > lastTime)
                 return TypedResults.Ok(conditions);
             else
                 return TypedResults.NoContent();

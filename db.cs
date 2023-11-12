@@ -1,4 +1,3 @@
-using api.Endpoints;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +25,7 @@ namespace api
         public DbSet<Condition> Conditions { get; set; }
         public DbSet<SpellTag> SpellTags { get; set; }
         public DbSet<Feature> Features { get; set; }
+        public DbSet<Feat> Feats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();
