@@ -59,6 +59,7 @@ using (var scope = app.Services.CreateScope())
             await db.SeedSchoolsAsync();
             await db.SeedSpellTagsAsync();
             await db.SeedSpellsAsync();
+            await db.SeedFeatsAsync();
         }
     }
 }
