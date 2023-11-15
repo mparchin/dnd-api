@@ -11,5 +11,6 @@ namespace api.Models
         public string Description { get; set; } = "";
         public int Level { get; set; }
         public string? Prerequisite { get; set; }
+        public string? Repeatable { get; set; }
     }
 }

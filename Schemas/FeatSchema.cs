@@ -8,6 +8,7 @@ namespace api.Schemas
         public string Description { get; set; } = "";
         public int Level { get; set; }
         public string? Prerequisite { get; set; }
+        public string? Repeatable { get; set; }
 
         public FeatSchema(Feat feat) : base(feat)
         {
@@ -15,6 +16,7 @@ namespace api.Schemas
             Description = feat.Description;
             Level = feat.Level;
             Prerequisite = feat.Prerequisite;
+            Repeatable = feat.Repeatable;
         }
 
     }
