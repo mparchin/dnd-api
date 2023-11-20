@@ -12,5 +12,6 @@ namespace api.Models
         public int Level { get; set; }
         public string? Prerequisite { get; set; }
         public string? Repeatable { get; set; }
+        public string? Book { get; set; }
     }
 }
