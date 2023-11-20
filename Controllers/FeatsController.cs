@@ -12,6 +12,7 @@ namespace api.Controllers
             feat.Level = updatedFeat.Level;
             feat.Prerequisite = updatedFeat.Prerequisite;
             feat.Repeatable = updatedFeat.Repeatable;
+            feat.Book = updatedFeat.Book;
         })
         {
         }
