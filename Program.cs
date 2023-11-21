@@ -30,6 +30,7 @@ modelBuilder.EntitySet<SpellTag>("SpellTags");
 modelBuilder.EntitySet<Spell>("Spells");
 modelBuilder.EntitySet<Feature>("Features");
 modelBuilder.EntitySet<Feat>("Feats");
+modelBuilder.EntitySet<Rule>("Rules");
 modelBuilder.EnableLowerCamelCase();
 
 builder.Services.AddControllers()
@@ -79,6 +80,7 @@ app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
 app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
+app.MapGroup("/Rules").MapRulesApi();
 app.MapControllers();
 
 app.Run();
