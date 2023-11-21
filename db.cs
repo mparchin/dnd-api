@@ -26,6 +26,7 @@ namespace api
         public DbSet<SpellTag> SpellTags { get; set; }
         public DbSet<Feature> Features { get; set; }
         public DbSet<Feat> Feats { get; set; }
+        public DbSet<Rule> Rules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();
