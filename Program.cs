@@ -3,11 +3,15 @@ using System.Text.Json.Serialization;
 using api;
 using api.Endpoints;
 using api.Models;
+using authority;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Console.WriteLine($"Running app in {builder.Environment.EnvironmentName} mode");
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -47,6 +51,9 @@ builder.Services.AddControllers()
                                             .SetMaxTop(null)
                                             .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 
+builder.AddJWTAuthentication();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -75,12 +82,16 @@ app.UseCors(builder =>
     builder.AllowAnyOrigin();
 });
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
 app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
-app.MapControllers();
+
+app.MapControllers().RequireAuthorization(Authorization.Admin);
 
 app.Run();
