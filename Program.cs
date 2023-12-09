@@ -52,7 +52,7 @@ builder.Services.AddControllers()
                                             .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 
 builder.AddJWTAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => options.AddPolicies());
 
 var app = builder.Build();
 
@@ -92,6 +92,6 @@ app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
 
-app.MapControllers().RequireAuthorization(Authorization.Admin);
+app.MapControllers();
 
 app.Run();
