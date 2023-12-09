@@ -1,16 +1,15 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using api.Models;
+using authority;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace api.Controllers
 {
+    [Authorize(Authorization.AdminPolicyName)]
     public abstract class BaseODataController<TEntity> : ODataController
         where TEntity : class, IModel, new()
     {
