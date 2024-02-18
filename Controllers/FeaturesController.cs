@@ -14,6 +14,7 @@ namespace api.Controllers
             feature.Order = updatedFeature.Order;
             feature.Subclass = updatedFeature.Subclass;
             feature.ClassId = updatedFeature.ClassId;
+            feature.IsDetails = updatedFeature.IsDetails;
         }, db.Features.Include(feature => feature.Class))
         {
         }
