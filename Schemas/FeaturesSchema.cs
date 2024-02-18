@@ -10,6 +10,7 @@ namespace api.Schemas
         public int? Order { get; set; }
         public string? Subclass { get; set; }
         public string? ClassName { get; set; }
+        public bool IsDetails { get; set; } = false;
 
         public FeaturesSchema(Feature feature) : base(feature)
         {
@@ -19,6 +20,7 @@ namespace api.Schemas
             Order = feature.Order;
             Subclass = feature.Subclass;
             ClassName = feature.Class?.Name;
+            IsDetails = feature.IsDetails;
         }
 
     }

@@ -14,5 +14,6 @@ namespace api.Models
         public string? Subclass { get; set; }
         public int? ClassId { get; set; }
         public Class? Class { get; set; }
+        public bool IsDetails { get; set; } = false;
     }
 }
