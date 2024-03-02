@@ -5,6 +5,8 @@ namespace api.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
+        public int HitDie { get; set; } = 0;
+        public string ProficiencyBonous { get; set; } = "{1=2,2=2}";
         public List<Spell> RestrictedSpells { get; } = new();
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
