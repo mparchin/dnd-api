@@ -91,6 +91,7 @@ app.MapGroup("/conditions").MapConditionsApi();
 app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
+app.MapGroup("/Classes").MapClassesApi();
 
 app.MapControllers();
 

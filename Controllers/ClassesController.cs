@@ -8,6 +8,8 @@ namespace api.Controllers
             base(db, db.Classes, logger, (@class, updatedClass) =>
         {
             @class.Name = updatedClass.Name;
+            @class.HitDie = updatedClass.HitDie;
+            @class.ProficiencyBonous = updatedClass.ProficiencyBonous;
         })
         {
         }
