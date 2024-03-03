@@ -10,6 +10,8 @@ namespace api.Controllers
             @class.Name = updatedClass.Name;
             @class.HitDie = updatedClass.HitDie;
             @class.ProficiencyBonous = updatedClass.ProficiencyBonous;
+            @class.ManaPerLevel = updatedClass.ManaPerLevel;
+            @class.CasterSubClassName = updatedClass.CasterSubClassName;
         })
         {
         }
