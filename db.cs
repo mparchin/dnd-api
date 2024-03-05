@@ -27,6 +27,12 @@ namespace api
         public DbSet<Feature> Features { get; set; }
         public DbSet<Feat> Feats { get; set; }
         public DbSet<Rule> Rules { get; set; }
+        public DbSet<Character> Characters { get; set; }
+        public DbSet<CharacterAttributes> CharacterAttributes { get; set; }
+        public DbSet<CharacterExpert> CharacterExperts { get; set; }
+        public DbSet<CharacterHitpoint> CharacterHitpoints { get; set; }
+        public DbSet<CharacterSpellCasting> CharacterSpellCastings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();

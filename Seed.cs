@@ -136,5 +136,15 @@ namespace api
                 feat.Description = _rnd.NextWords(100);
                 feat.Prerequisite = _rnd.NextBool() ? _rnd.NextString() : "";
             });
+
+        public static Task SeedCharacterAsync(this Db db) =>
+            db.SeedEntityAsync<Character>(1, c =>
+            {
+                c.Name = "Escanor";
+                c.Level = 10;
+                c.Race = "Elf";
+                c.Background = "Acolyte";
+                c.Class = db.Classes.Next() ?? new Class();
+            });
     }
 }

@@ -14,6 +14,7 @@ namespace api.Models
         [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; } = DateTime.Now;
         public List<Feature> Features { get; } = new();
+        public List<Character> Characters { get; } = new();
 
     }
 }

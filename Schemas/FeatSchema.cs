@@ -2,24 +2,13 @@ using api.Models;
 
 namespace api.Schemas
 {
-    public class FeatSchema : BaseSchema<Feat>
+    public class FeatSchema(Feat feat) : BaseSchema<Feat>(feat)
     {
-        public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
-        public int Level { get; set; }
-        public string? Prerequisite { get; set; }
-        public string? Repeatable { get; set; }
-        public string? Book { get; set; }
-
-        public FeatSchema(Feat feat) : base(feat)
-        {
-            Name = feat.Name;
-            Description = feat.Description;
-            Level = feat.Level;
-            Prerequisite = feat.Prerequisite;
-            Repeatable = feat.Repeatable;
-            Book = feat.Book;
-        }
-
+        public string Name { get; set; } = feat.Name;
+        public string Description { get; set; } = feat.Description;
+        public int Level { get; set; } = feat.Level;
+        public string? Prerequisite { get; set; } = feat.Prerequisite;
+        public string? Repeatable { get; set; } = feat.Repeatable;
+        public string? Book { get; set; } = feat.Book;
     }
 }
