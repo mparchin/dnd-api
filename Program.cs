@@ -70,6 +70,9 @@ using (var scope = app.Services.CreateScope())
             await db.SeedSpellsAsync();
             await db.SeedFeatsAsync();
         }
+
+        //TODO Remove
+        await db.SeedCharacterAsync();
     }
 }
 
@@ -92,6 +95,7 @@ app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
 app.MapGroup("/Classes").MapClassesApi();
+app.MapGroup("/Characters").MapCharactersApi();
 
 app.MapControllers();
 
