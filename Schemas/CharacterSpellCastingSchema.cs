@@ -8,5 +8,13 @@ namespace api.Schemas
         public string CastingAbility { get; set; } = model.CastingAbility;
         public string AttackExtra { get; set; } = model.AttackExtra;
         public string DcExtra { get; set; } = model.DcExtra;
+
+        public CharacterSpellCasting ToModel() => new()
+        {
+            UsedMana = UsedMana,
+            CastingAbility = CastingAbility,
+            AttackExtra = AttackExtra,
+            DcExtra = DcExtra
+        };
     }
 }
