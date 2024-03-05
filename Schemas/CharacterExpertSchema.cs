@@ -9,5 +9,14 @@ namespace api.Schemas
         public bool IsExpert { get; set; } = model.IsExpert;
         public string AttributeName { get; set; } = model.AttributeName;
         public string ExtraText { get; set; } = model.ExtraText;
+
+        public CharacterExpert ToModel() => new()
+        {
+            HasAdvantage = HasAdvantage,
+            IsProficient = IsProficient,
+            IsExpert = IsExpert,
+            AttributeName = AttributeName,
+            ExtraText = ExtraText,
+        };
     }
 }

@@ -9,5 +9,14 @@ namespace api.Schemas
         public int MaximumModifire { get; set; } = model.MaximumModifire;
         public int Temp { get; set; } = model.Temp;
         public int DamageTakenAfterTemp { get; set; } = model.DamageTakenAfterTemp;
+
+        public CharacterHitpoint ToModel() => new()
+        {
+            CustomMaximum = CustomMaximum,
+            AverageMaximumExtra = AverageMaximumExtra,
+            MaximumModifire = MaximumModifire,
+            Temp = Temp,
+            DamageTakenAfterTemp = DamageTakenAfterTemp
+        };
     }
 }

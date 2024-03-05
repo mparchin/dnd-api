@@ -98,5 +98,90 @@ namespace api.Schemas
                 AnimalHandling.Time,Insight.Time,Medicine.Time,Perception.Time,Survival.Time,
                 Deception.Time,Intimidation.Time,Performance.Time,Persuasion.Time }.Max();
         }
+
+        public Character ToModel(Class @class, out CharacterAttributes attributes, out CharacterExpert inititive,
+            out CharacterHitpoint hp, out CharacterSpellCasting spellCasting, out CharacterExpert strengthSave,
+            out CharacterExpert dextritySave, out CharacterExpert constitutionSave, out CharacterExpert intelligenceSave,
+            out CharacterExpert wisdomSave, out CharacterExpert charismaSave,
+            out CharacterExpert athletics,
+            out CharacterExpert acrobatics, out CharacterExpert sleightOfHands, out CharacterExpert stealth,
+            out CharacterExpert arcana, out CharacterExpert history, out CharacterExpert investigation, out CharacterExpert nature, out CharacterExpert religion,
+            out CharacterExpert animalHandling, out CharacterExpert insight, out CharacterExpert medicine, out CharacterExpert perception, out CharacterExpert survival,
+            out CharacterExpert deception, out CharacterExpert intimidation, out CharacterExpert performance, out CharacterExpert persuasion)
+        {
+            attributes = Attributes.ToModel();
+            inititive = Inititive.ToModel();
+            hp = Hp.ToModel();
+            spellCasting = SpellCasting.ToModel();
+
+            strengthSave = StrengthSave.ToModel();
+            dextritySave = DextritySave.ToModel();
+            constitutionSave = ConstitutionSave.ToModel();
+            intelligenceSave = IntelligenceSave.ToModel();
+            charismaSave = CharismaSave.ToModel();
+            wisdomSave = WisdomSave.ToModel();
+
+            athletics = Athletics.ToModel();
+            acrobatics = Acrobatics.ToModel();
+            sleightOfHands = SleightOfHands.ToModel();
+            stealth = Stealth.ToModel();
+            arcana = Arcana.ToModel();
+            history = History.ToModel();
+            investigation = Investigation.ToModel();
+            nature = Nature.ToModel();
+            religion = Religion.ToModel();
+            animalHandling = AnimalHandling.ToModel();
+            insight = Insight.ToModel();
+            medicine = Medicine.ToModel();
+            perception = Perception.ToModel();
+            survival = Survival.ToModel();
+            deception = Deception.ToModel();
+            intimidation = Intimidation.ToModel();
+            performance = Performance.ToModel();
+            persuasion = Persuasion.ToModel();
+
+            return new()
+            {
+                Name = Name,
+                Race = Race,
+                Background = Background,
+                Image = Image,
+                Class = @class,
+                SubClassName = SubClassName,
+                Level = Level,
+                Attributes = attributes,
+                Speed = Speed,
+                Inititive = inititive,
+                ArmorClassExtra = ArmorClassExtra,
+                Hp = hp,
+                SpellCasting = spellCasting,
+
+                StrengthSave = strengthSave,
+                DextritySave = dextritySave,
+                ConstitutionSave = constitutionSave,
+                IntelligenceSave = intelligenceSave,
+                WisdomSave = wisdomSave,
+                CharismaSave = charismaSave,
+
+                Athletics = athletics,
+                Acrobatics = acrobatics,
+                SleightOfHands = sleightOfHands,
+                Stealth = stealth,
+                Arcana = arcana,
+                History = history,
+                Investigation = investigation,
+                Nature = nature,
+                Religion = religion,
+                AnimalHandling = animalHandling,
+                Insight = insight,
+                Medicine = medicine,
+                Perception = perception,
+                Survival = survival,
+                Deception = deception,
+                Intimidation = intimidation,
+                Performance = performance,
+                Persuasion = persuasion,
+            };
+        }
     }
 }

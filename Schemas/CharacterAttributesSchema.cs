@@ -10,5 +10,15 @@ namespace api.Schemas
         public int Intelligence { get; set; } = model.Intelligence;
         public int Wisdom { get; set; } = model.Wisdom;
         public int Charisma { get; set; } = model.Charisma;
+
+        public CharacterAttributes ToModel() => new()
+        {
+            Strength = Strength,
+            Dextrity = Dextrity,
+            Constitution = Constitution,
+            Intelligence = Intelligence,
+            Wisdom = Wisdom,
+            Charisma = Charisma,
+        };
     }
 }
