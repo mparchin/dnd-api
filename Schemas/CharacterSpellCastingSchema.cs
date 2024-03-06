@@ -2,19 +2,33 @@ using api.Models;
 
 namespace api.Schemas
 {
-    public class CharacterSpellCastingSchema(CharacterSpellCasting model) : BaseSchema<CharacterSpellCasting>(model)
+    public class CharacterSpellCastingSchema : BaseSchema<CharacterSpellCasting>
     {
-        public int UsedMana { get; set; } = model.UsedMana;
-        public string CastingAbility { get; set; } = model.CastingAbility;
-        public string AttackExtra { get; set; } = model.AttackExtra;
-        public string DcExtra { get; set; } = model.DcExtra;
+        public int UsedMana { get; set; }
+        public string CastingAbility { get; set; } = "";
+        public string AttackExtra { get; set; } = "";
+        public string DcExtra { get; set; } = "";
 
-        public CharacterSpellCasting ToModel() => new()
+        public CharacterSpellCastingSchema()
         {
-            UsedMana = UsedMana,
-            CastingAbility = CastingAbility,
-            AttackExtra = AttackExtra,
-            DcExtra = DcExtra
-        };
+
+        }
+
+        public CharacterSpellCastingSchema(CharacterSpellCasting model) : base(model)
+        {
+            UsedMana = model.UsedMana;
+            CastingAbility = model.CastingAbility;
+            AttackExtra = model.AttackExtra;
+            DcExtra = model.DcExtra;
+        }
+        public CharacterSpellCasting ToModel(CharacterSpellCasting? model = null)
+        {
+            model ??= new();
+            model.UsedMana = UsedMana;
+            model.CastingAbility = CastingAbility;
+            model.AttackExtra = AttackExtra;
+            model.DcExtra = DcExtra;
+            return model;
+        }
     }
 }

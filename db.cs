@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api
 {
-    public class Db : DbContext
+    public class Db(DbContextOptions<Db> options) : DbContext(options)
     {
         public static string GetLocalDbConnection(WebApplicationBuilder builder) =>
             $"Data Source={builder.Configuration.GetValue<string>("Local_Db_Path")}" +
@@ -18,7 +18,6 @@ namespace api
             $"Integrated Security=true;" +
             $"Pooling=true;";
 
-        public Db(DbContextOptions<Db> options) : base(options) { }
         public DbSet<Spell> Spells { get; set; }
         public DbSet<School> Schools { get; set; }
         public DbSet<Class> Classes { get; set; }

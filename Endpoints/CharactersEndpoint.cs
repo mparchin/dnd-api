@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using api.Models;
 using api.Schemas;
+using authority;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,21 +13,58 @@ namespace api.Endpoints
         {
             group.MapGet("/", GetAllAsync);
             group.MapPost("/", CreateCharacter);
+            group.MapPut("/", EditCharacter);
+            group.MapDelete("/{id}", Delete);
         }
 
-        private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db, long lastTime = long.MinValue)
+        private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
+            ClaimsPrincipal claimsPrincipal, long lastTime = long.MinValue)
         {
-            var characters = (await db.Characters.ToArrayAsync())
-                                        .Select(character => new CharacterSchema(character))
-                                        .ToArray();
+            var user = claimsPrincipal.GetUser();
+            var characters = (await db.Characters
+                    .Include(c => c.Class)
+                    .Include(c => c.Attributes)
+                    .Include(c => c.Hp)
+                    .Include(c => c.SpellCasting)
+                    .Include(c => c.Inititive)
+                    .Include(c => c.StrengthSave)
+                    .Include(c => c.DextritySave)
+                    .Include(c => c.ConstitutionSave)
+                    .Include(c => c.IntelligenceSave)
+                    .Include(c => c.WisdomSave)
+                    .Include(c => c.CharismaSave)
+                    .Include(c => c.Athletics)
+                    .Include(c => c.Acrobatics)
+                    .Include(c => c.SleightOfHands)
+                    .Include(c => c.Stealth)
+                    .Include(c => c.Arcana)
+                    .Include(c => c.History)
+                    .Include(c => c.Investigation)
+                    .Include(c => c.Nature)
+                    .Include(c => c.Religion)
+                    .Include(c => c.AnimalHandling)
+                    .Include(c => c.Insight)
+                    .Include(c => c.Medicine)
+                    .Include(c => c.Perception)
+                    .Include(c => c.Survival)
+                    .Include(c => c.Deception)
+                    .Include(c => c.Intimidation)
+                    .Include(c => c.Performance)
+                    .Include(c => c.Persuasion)
+                      .Where(c => c.UserId == user.Guid)
+                    .ToArrayAsync())
+                .Select(character => new CharacterSchema(character))
+                .ToArray();
             if (characters.Length != 0 && characters.Max(character => character.Time) > lastTime)
                 return TypedResults.Ok(characters);
             return TypedResults.NoContent();
         }
 
-        private static async Task<Results<Created<CharacterSchema>, BadRequest<string>>> CreateCharacter(Db db, CharacterSchema characterSchema)
+        private static async Task<Results<Created<CharacterSchema>, BadRequest<string>>> CreateCharacter(Db db,
+            ClaimsPrincipal claimsPrincipal, CharacterSchema characterSchema)
         {
-            var @class = await db.Classes.FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
+            var user = claimsPrincipal.GetUser();
+            var @class = await db.Classes.FirstOrDefaultAsync(c => c.Id == characterSchema.Class.Id);
             if (@class is null)
                 return TypedResults.BadRequest("class id not found");
 
@@ -70,11 +109,142 @@ namespace api.Endpoints
 
             await db.SaveChangesAsync();
 
+            model.UserId = user.Guid;
             await db.Characters.AddAsync(model);
 
             await db.SaveChangesAsync();
 
             return TypedResults.Created($"/Characters/{model.Id}", new CharacterSchema(model));
+        }
+
+        private static async Task<Results<Ok<CharacterSchema>, BadRequest<string>>> EditCharacter(Db db,
+            ClaimsPrincipal claimsPrincipal, CharacterSchema characterSchema)
+        {
+            var user = claimsPrincipal.GetUser();
+            var model = await db.Characters.Include(c => c.Attributes)
+                .Include(c => c.Class)
+                .Include(c => c.Hp)
+                .Include(c => c.SpellCasting)
+                .Include(c => c.Inititive)
+                .Include(c => c.StrengthSave)
+                .Include(c => c.DextritySave)
+                .Include(c => c.ConstitutionSave)
+                .Include(c => c.IntelligenceSave)
+                .Include(c => c.WisdomSave)
+                .Include(c => c.CharismaSave)
+                .Include(c => c.Athletics)
+                .Include(c => c.Acrobatics)
+                .Include(c => c.SleightOfHands)
+                .Include(c => c.Stealth)
+                .Include(c => c.Arcana)
+                .Include(c => c.History)
+                .Include(c => c.Investigation)
+                .Include(c => c.Nature)
+                .Include(c => c.Religion)
+                .Include(c => c.AnimalHandling)
+                .Include(c => c.Insight)
+                .Include(c => c.Medicine)
+                .Include(c => c.Perception)
+                .Include(c => c.Survival)
+                .Include(c => c.Deception)
+                .Include(c => c.Intimidation)
+                .Include(c => c.Performance)
+                .Include(c => c.Persuasion)
+                .Where(c => c.UserId == user.Guid)
+                .FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
+
+            if (model is null)
+                return TypedResults.BadRequest($"id not found {characterSchema.Id}");
+
+            characterSchema.EditModel(model, model.Attributes, model.Inititive, model.Hp, model.SpellCasting,
+                model.StrengthSave, model.DextritySave, model.ConstitutionSave, model.IntelligenceSave, model.WisdomSave, model.CharismaSave,
+                model.Athletics,
+                model.Acrobatics, model.SleightOfHands, model.Stealth,
+                model.Arcana, model.History, model.Investigation, model.Nature, model.Religion,
+                model.AnimalHandling, model.Insight, model.Medicine, model.Perception, model.Survival,
+                model.Deception, model.Intimidation, model.Performance, model.Persuasion);
+
+            model.UpdatedOn = DateTime.UtcNow;
+
+            if ((await db.Classes.FirstOrDefaultAsync(c => c.Id == characterSchema.Class.Id)) is { } newClass)
+                model.Class = newClass;
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(new CharacterSchema(model));
+        }
+
+        private static async Task<Results<NoContent, BadRequest<string>>> Delete(Db db,
+            ClaimsPrincipal claimsPrincipal, int id)
+        {
+            var user = claimsPrincipal.GetUser();
+            var model = await db.Characters.Include(c => c.Attributes)
+                .Include(c => c.Hp)
+                .Include(c => c.SpellCasting)
+                .Include(c => c.Inititive)
+                .Include(c => c.StrengthSave)
+                .Include(c => c.DextritySave)
+                .Include(c => c.ConstitutionSave)
+                .Include(c => c.IntelligenceSave)
+                .Include(c => c.WisdomSave)
+                .Include(c => c.CharismaSave)
+                .Include(c => c.Athletics)
+                .Include(c => c.Acrobatics)
+                .Include(c => c.SleightOfHands)
+                .Include(c => c.Stealth)
+                .Include(c => c.Arcana)
+                .Include(c => c.History)
+                .Include(c => c.Investigation)
+                .Include(c => c.Nature)
+                .Include(c => c.Religion)
+                .Include(c => c.AnimalHandling)
+                .Include(c => c.Insight)
+                .Include(c => c.Medicine)
+                .Include(c => c.Perception)
+                .Include(c => c.Survival)
+                .Include(c => c.Deception)
+                .Include(c => c.Intimidation)
+                .Include(c => c.Performance)
+                .Include(c => c.Persuasion)
+                .Where(m => m.UserId == user.Guid)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (model is null)
+                return TypedResults.BadRequest($"Id not found {id}");
+
+            db.Remove(model.Attributes);
+            db.Remove(model.Inititive);
+            db.Remove(model.Hp);
+            db.Remove(model.SpellCasting);
+            db.Remove(model.StrengthSave);
+            db.Remove(model.DextritySave);
+            db.Remove(model.ConstitutionSave);
+            db.Remove(model.IntelligenceSave);
+            db.Remove(model.WisdomSave);
+            db.Remove(model.CharismaSave);
+            db.Remove(model.Athletics);
+            db.Remove(model.Acrobatics);
+            db.Remove(model.SleightOfHands);
+            db.Remove(model.Stealth);
+            db.Remove(model.Arcana);
+            db.Remove(model.History);
+            db.Remove(model.Investigation);
+            db.Remove(model.Nature);
+            db.Remove(model.Religion);
+            db.Remove(model.AnimalHandling);
+            db.Remove(model.Insight);
+            db.Remove(model.Medicine);
+            db.Remove(model.Perception);
+            db.Remove(model.Survival);
+            db.Remove(model.Deception);
+            db.Remove(model.Intimidation);
+            db.Remove(model.Performance);
+            db.Remove(model.Persuasion);
+
+            db.Remove(model);
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.NoContent();
         }
     }
 }

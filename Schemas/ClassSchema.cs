@@ -2,12 +2,27 @@ using api.Models;
 
 namespace api.Schemas
 {
-    public class ClassSchema(Class @class) : BaseSchema<Class>(@class)
+    public class ClassSchema : BaseSchema<Class>
     {
-        public string Name { get; set; } = @class.Name;
-        public int HitDie { get; set; } = @class.HitDie;
-        public string ProficiencyBonous { get; set; } = @class.ProficiencyBonous;
-        public string ManaPerLevel { get; set; } = @class.ManaPerLevel;
-        public string CasterSubClassName { get; set; } = @class.CasterSubClassName;
+        public ClassSchema()
+        {
+
+        }
+        public ClassSchema(Class? model = null) : base(model)
+        {
+            if (model is null)
+                return;
+            Name = model.Name;
+            HitDie = model.HitDie;
+            ProficiencyBonous = model.ProficiencyBonous;
+            ManaPerLevel = model.ManaPerLevel;
+            CasterSubClassName = model.CasterSubClassName;
+        }
+
+        public string Name { get; set; } = "";
+        public int HitDie { get; set; } = 0;
+        public string ProficiencyBonous { get; set; } = "";
+        public string ManaPerLevel { get; set; } = "";
+        public string CasterSubClassName { get; set; } = "";
     }
 }

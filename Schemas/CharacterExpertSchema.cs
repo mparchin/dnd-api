@@ -2,21 +2,37 @@ using api.Models;
 
 namespace api.Schemas
 {
-    public class CharacterExpertSchema(CharacterExpert model) : BaseSchema<CharacterExpert>(model)
+    public class CharacterExpertSchema : BaseSchema<CharacterExpert>
     {
-        public bool HasAdvantage { get; set; } = model.HasAdvantage;
-        public bool IsProficient { get; set; } = model.IsProficient;
-        public bool IsExpert { get; set; } = model.IsExpert;
-        public string AttributeName { get; set; } = model.AttributeName;
-        public string ExtraText { get; set; } = model.ExtraText;
+        public bool HasAdvantage { get; set; }
+        public bool IsProficient { get; set; }
+        public bool IsExpert { get; set; }
+        public string AttributeName { get; set; } = "";
+        public string ExtraText { get; set; } = "";
 
-        public CharacterExpert ToModel() => new()
+        public CharacterExpertSchema()
         {
-            HasAdvantage = HasAdvantage,
-            IsProficient = IsProficient,
-            IsExpert = IsExpert,
-            AttributeName = AttributeName,
-            ExtraText = ExtraText,
-        };
+
+        }
+
+        public CharacterExpertSchema(CharacterExpert model) : base(model)
+        {
+            HasAdvantage = model.HasAdvantage;
+            IsProficient = model.IsProficient;
+            IsExpert = model.IsExpert;
+            AttributeName = model.AttributeName;
+            ExtraText = model.ExtraText;
+        }
+
+        public CharacterExpert ToModel(CharacterExpert? model = null)
+        {
+            model ??= new();
+            model.HasAdvantage = HasAdvantage;
+            model.IsProficient = IsProficient;
+            model.IsExpert = IsExpert;
+            model.AttributeName = AttributeName;
+            model.ExtraText = ExtraText;
+            return model;
+        }
     }
 }

@@ -7,6 +7,7 @@ using authority;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,33 @@ Console.WriteLine($"Running app in {builder.Environment.EnvironmentName} mode");
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JSON Web Token based security"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement{
+        {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        Array.Empty<string>()
+    }
+    });
+});
 
 if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<Db>(options =>
@@ -70,9 +98,6 @@ using (var scope = app.Services.CreateScope())
             await db.SeedSpellsAsync();
             await db.SeedFeatsAsync();
         }
-
-        //TODO Remove
-        await db.SeedCharacterAsync();
     }
 }
 
@@ -88,6 +113,11 @@ app.UseCors(builder =>
 app.UseAuthentication();
 app.UseAuthorization();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapGroup("/spells").MapSpellsApi();
 app.MapGroup("/conditions").MapConditionsApi();
@@ -95,7 +125,10 @@ app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
 app.MapGroup("/Classes").MapClassesApi();
-app.MapGroup("/Characters").MapCharactersApi();
+
+app.MapGroup("/Characters")
+    .RequireAuthorization(Authorization.User)
+    .MapCharactersApi();
 
 app.MapControllers();
 
