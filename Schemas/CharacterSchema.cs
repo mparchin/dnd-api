@@ -8,41 +8,46 @@ namespace api.Schemas
         public string Race { get; set; } = "";
         public string Background { get; set; } = "";
         public string? Image { get; set; }
-        public ClassSchema Class { get; set; }
+        public ClassSchema Class { get; set; } = new();
         public string SubClassName { get; set; } = "";
         public int Level { get; set; } = 1;
-        public CharacterAttributesSchema Attributes { get; set; }
+        public CharacterAttributesSchema Attributes { get; set; } = new();
         public int Speed { get; set; } = 30;
-        public CharacterExpertSchema Inititive { get; set; }
+        public CharacterExpertSchema Inititive { get; set; } = new();
         public string ArmorClassExtra { get; set; } = "10";
-        public CharacterHitpointSchema Hp { get; set; }
-        public CharacterSpellCastingSchema SpellCasting { get; set; }
+        public CharacterHitpointSchema Hp { get; set; } = new();
+        public CharacterSpellCastingSchema SpellCasting { get; set; } = new();
 
-        public CharacterExpertSchema StrengthSave { get; set; }
-        public CharacterExpertSchema DextritySave { get; set; }
-        public CharacterExpertSchema ConstitutionSave { get; set; }
-        public CharacterExpertSchema IntelligenceSave { get; set; }
-        public CharacterExpertSchema WisdomSave { get; set; }
-        public CharacterExpertSchema CharismaSave { get; set; }
+        public CharacterExpertSchema StrengthSave { get; set; } = new();
+        public CharacterExpertSchema DextritySave { get; set; } = new();
+        public CharacterExpertSchema ConstitutionSave { get; set; } = new();
+        public CharacterExpertSchema IntelligenceSave { get; set; } = new();
+        public CharacterExpertSchema WisdomSave { get; set; } = new();
+        public CharacterExpertSchema CharismaSave { get; set; } = new();
 
-        public CharacterExpertSchema Athletics { get; set; }
-        public CharacterExpertSchema Acrobatics { get; set; }
-        public CharacterExpertSchema SleightOfHands { get; set; }
-        public CharacterExpertSchema Stealth { get; set; }
-        public CharacterExpertSchema Arcana { get; set; }
-        public CharacterExpertSchema History { get; set; }
-        public CharacterExpertSchema Investigation { get; set; }
-        public CharacterExpertSchema Nature { get; set; }
-        public CharacterExpertSchema Religion { get; set; }
-        public CharacterExpertSchema AnimalHandling { get; set; }
-        public CharacterExpertSchema Insight { get; set; }
-        public CharacterExpertSchema Medicine { get; set; }
-        public CharacterExpertSchema Perception { get; set; }
-        public CharacterExpertSchema Survival { get; set; }
-        public CharacterExpertSchema Deception { get; set; }
-        public CharacterExpertSchema Intimidation { get; set; }
-        public CharacterExpertSchema Performance { get; set; }
-        public CharacterExpertSchema Persuasion { get; set; }
+        public CharacterExpertSchema Athletics { get; set; } = new();
+        public CharacterExpertSchema Acrobatics { get; set; } = new();
+        public CharacterExpertSchema SleightOfHands { get; set; } = new();
+        public CharacterExpertSchema Stealth { get; set; } = new();
+        public CharacterExpertSchema Arcana { get; set; } = new();
+        public CharacterExpertSchema History { get; set; } = new();
+        public CharacterExpertSchema Investigation { get; set; } = new();
+        public CharacterExpertSchema Nature { get; set; } = new();
+        public CharacterExpertSchema Religion { get; set; } = new();
+        public CharacterExpertSchema AnimalHandling { get; set; } = new();
+        public CharacterExpertSchema Insight { get; set; } = new();
+        public CharacterExpertSchema Medicine { get; set; } = new();
+        public CharacterExpertSchema Perception { get; set; } = new();
+        public CharacterExpertSchema Survival { get; set; } = new();
+        public CharacterExpertSchema Deception { get; set; } = new();
+        public CharacterExpertSchema Intimidation { get; set; } = new();
+        public CharacterExpertSchema Performance { get; set; } = new();
+        public CharacterExpertSchema Persuasion { get; set; } = new();
+
+        public CharacterSchema()
+        {
+
+        }
 
         public CharacterSchema(Character model) : base(model)
         {
@@ -86,8 +91,11 @@ namespace api.Schemas
             Performance = new(model.Performance);
             Persuasion = new(model.Persuasion);
 
-            Time = new List<long> {
-                Time, Class.Time, Attributes.Time,
+            Time = new List<long>
+            {
+                Convert.ToInt64(((model?.UpdatedOn ?? new DateTime(2020, 1, 1))
+                    .ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds),
+                Class.Time, Attributes.Time,
                 Inititive.Time, SpellCasting.Time,
                 Hp.Time, StrengthSave.Time, DextritySave.Time,
                 ConstitutionSave.Time, IntelligenceSave.Time,
@@ -182,6 +190,57 @@ namespace api.Schemas
                 Performance = performance,
                 Persuasion = persuasion,
             };
+        }
+
+        public void EditModel(Character model, CharacterAttributes attributes, CharacterExpert inititive,
+            CharacterHitpoint hp, CharacterSpellCasting spellCasting, CharacterExpert strengthSave,
+            CharacterExpert dextritySave, CharacterExpert constitutionSave, CharacterExpert intelligenceSave,
+            CharacterExpert wisdomSave, CharacterExpert charismaSave,
+            CharacterExpert athletics,
+            CharacterExpert acrobatics, CharacterExpert sleightOfHands, CharacterExpert stealth,
+            CharacterExpert arcana, CharacterExpert history, CharacterExpert investigation, CharacterExpert nature, CharacterExpert religion,
+            CharacterExpert animalHandling, CharacterExpert insight, CharacterExpert medicine, CharacterExpert perception, CharacterExpert survival,
+            CharacterExpert deception, CharacterExpert intimidation, CharacterExpert performance, CharacterExpert persuasion)
+        {
+            model.Name = Name;
+            model.Race = Race;
+            model.Background = Background;
+            model.Image = Image;
+            model.SubClassName = SubClassName;
+            model.Level = Level;
+            model.Speed = Speed;
+            model.ArmorClassExtra = ArmorClassExtra;
+
+            Attributes.ToModel(attributes);
+            Inititive.ToModel(inititive);
+            Hp.ToModel(hp);
+            SpellCasting.ToModel(spellCasting);
+
+            StrengthSave.ToModel(strengthSave);
+            DextritySave.ToModel(dextritySave);
+            ConstitutionSave.ToModel(constitutionSave);
+            IntelligenceSave.ToModel(intelligenceSave);
+            CharismaSave.ToModel(charismaSave);
+            WisdomSave.ToModel(wisdomSave);
+
+            Athletics.ToModel(athletics);
+            Acrobatics.ToModel(acrobatics);
+            SleightOfHands.ToModel(sleightOfHands);
+            Stealth.ToModel(stealth);
+            Arcana.ToModel(arcana);
+            History.ToModel(history);
+            Investigation.ToModel(investigation);
+            Nature.ToModel(nature);
+            Religion.ToModel(religion);
+            AnimalHandling.ToModel(animalHandling);
+            Insight.ToModel(insight);
+            Medicine.ToModel(medicine);
+            Perception.ToModel(perception);
+            Survival.ToModel(survival);
+            Deception.ToModel(deception);
+            Intimidation.ToModel(intimidation);
+            Performance.ToModel(performance);
+            Persuasion.ToModel(persuasion);
         }
     }
 }

@@ -2,21 +2,38 @@ using api.Models;
 
 namespace api.Schemas
 {
-    public class CharacterHitpointSchema(CharacterHitpoint model) : BaseSchema<CharacterHitpoint>(model)
+    public class CharacterHitpointSchema : BaseSchema<CharacterHitpoint>
     {
-        public int? CustomMaximum { get; set; } = model.CustomMaximum;
-        public string AverageMaximumExtra { get; set; } = model.AverageMaximumExtra;
-        public int MaximumModifire { get; set; } = model.MaximumModifire;
-        public int Temp { get; set; } = model.Temp;
-        public int DamageTakenAfterTemp { get; set; } = model.DamageTakenAfterTemp;
+        public int? CustomMaximum { get; set; }
+        public string AverageMaximumExtra { get; set; } = "";
+        public int MaximumModifire { get; set; }
+        public int Temp { get; set; }
+        public int DamageTakenAfterTemp { get; set; }
 
-        public CharacterHitpoint ToModel() => new()
+        public CharacterHitpointSchema()
         {
-            CustomMaximum = CustomMaximum,
-            AverageMaximumExtra = AverageMaximumExtra,
-            MaximumModifire = MaximumModifire,
-            Temp = Temp,
-            DamageTakenAfterTemp = DamageTakenAfterTemp
-        };
+
+        }
+
+        public CharacterHitpointSchema(CharacterHitpoint model) : base(model)
+        {
+            CustomMaximum = model.CustomMaximum;
+            AverageMaximumExtra = model.AverageMaximumExtra;
+            MaximumModifire = model.MaximumModifire;
+            Temp = model.Temp;
+            DamageTakenAfterTemp = model.DamageTakenAfterTemp;
+        }
+
+
+        public CharacterHitpoint ToModel(CharacterHitpoint? model = null)
+        {
+            model ??= new();
+            model.CustomMaximum = CustomMaximum;
+            model.AverageMaximumExtra = AverageMaximumExtra;
+            model.MaximumModifire = MaximumModifire;
+            model.Temp = Temp;
+            model.DamageTakenAfterTemp = DamageTakenAfterTemp;
+            return model;
+        }
     }
 }
