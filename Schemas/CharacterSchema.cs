@@ -44,6 +44,9 @@ namespace api.Schemas
         public CharacterExpertSchema Performance { get; set; } = new();
         public CharacterExpertSchema Persuasion { get; set; } = new();
 
+        public int UsedHitDie { get; set; } = 0;
+        public int UsedHealingSurge { get; set; } = 0;
+
         public CharacterSchema()
         {
 
@@ -90,6 +93,9 @@ namespace api.Schemas
             Intimidation = new(model.Intimidation);
             Performance = new(model.Performance);
             Persuasion = new(model.Persuasion);
+
+            UsedHitDie = model.UsedHitDie;
+            UsedHealingSurge = model.UsedHealingSurge;
 
             Time = new List<long>
             {
@@ -189,6 +195,9 @@ namespace api.Schemas
                 Intimidation = intimidation,
                 Performance = performance,
                 Persuasion = persuasion,
+
+                UsedHitDie = UsedHitDie,
+                UsedHealingSurge = UsedHealingSurge,
             };
         }
 
@@ -241,6 +250,9 @@ namespace api.Schemas
             Intimidation.ToModel(intimidation);
             Performance.ToModel(performance);
             Persuasion.ToModel(persuasion);
+
+            model.UsedHitDie = UsedHitDie;
+            model.UsedHealingSurge = UsedHealingSurge;
         }
     }
 }

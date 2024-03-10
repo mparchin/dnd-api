@@ -15,6 +15,10 @@ namespace api.Endpoints
             group.MapPost("/", CreateCharacter);
             group.MapPut("/", EditCharacter);
             group.MapDelete("/{id}", Delete);
+
+            group.MapPost("/{id}/extras", CreateExtra);
+            group.MapPut("/{id}/extras", EditExtra);
+            group.MapDelete("/{id}/extras/{extraId}", DeleteExtra);
         }
 
         private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
@@ -51,7 +55,8 @@ namespace api.Endpoints
                     .Include(c => c.Intimidation)
                     .Include(c => c.Performance)
                     .Include(c => c.Persuasion)
-                      .Where(c => c.UserId == user.Guid)
+                    .Include(c => c.Extras)
+                    .Where(c => c.UserId == user.Guid)
                     .ToArrayAsync())
                 .Select(character => new CharacterSchema(character))
                 .ToArray();
@@ -117,7 +122,7 @@ namespace api.Endpoints
             return TypedResults.Created($"/Characters/{model.Id}", new CharacterSchema(model));
         }
 
-        private static async Task<Results<Ok<CharacterSchema>, BadRequest<string>>> EditCharacter(Db db,
+        private static async Task<Results<Ok<CharacterSchema>, NotFound<string>>> EditCharacter(Db db,
             ClaimsPrincipal claimsPrincipal, CharacterSchema characterSchema)
         {
             var user = claimsPrincipal.GetUser();
@@ -150,11 +155,12 @@ namespace api.Endpoints
                 .Include(c => c.Intimidation)
                 .Include(c => c.Performance)
                 .Include(c => c.Persuasion)
+                .Include(c => c.Extras)
                 .Where(c => c.UserId == user.Guid)
                 .FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
 
             if (model is null)
-                return TypedResults.BadRequest($"id not found {characterSchema.Id}");
+                return TypedResults.NotFound($"id not found {characterSchema.Id}");
 
             characterSchema.EditModel(model, model.Attributes, model.Inititive, model.Hp, model.SpellCasting,
                 model.StrengthSave, model.DextritySave, model.ConstitutionSave, model.IntelligenceSave, model.WisdomSave, model.CharismaSave,
@@ -174,7 +180,7 @@ namespace api.Endpoints
             return TypedResults.Ok(new CharacterSchema(model));
         }
 
-        private static async Task<Results<NoContent, BadRequest<string>>> Delete(Db db,
+        private static async Task<Results<NoContent, NotFound<string>>> Delete(Db db,
             ClaimsPrincipal claimsPrincipal, int id)
         {
             var user = claimsPrincipal.GetUser();
@@ -206,10 +212,11 @@ namespace api.Endpoints
                 .Include(c => c.Intimidation)
                 .Include(c => c.Performance)
                 .Include(c => c.Persuasion)
+                .Include(c => c.Extras)
                 .Where(m => m.UserId == user.Guid)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model is null)
-                return TypedResults.BadRequest($"Id not found {id}");
+                return TypedResults.NotFound($"Id not found {id}");
 
             db.Remove(model.Attributes);
             db.Remove(model.Inititive);
@@ -240,8 +247,62 @@ namespace api.Endpoints
             db.Remove(model.Performance);
             db.Remove(model.Persuasion);
 
+            model.Extras.ForEach(extra => db.Remove(extra));
+
             db.Remove(model);
 
+            await db.SaveChangesAsync();
+
+            return TypedResults.NoContent();
+        }
+
+        private static async Task<Results<Created<CharacterExtraSchema>, NotFound<string>>> CreateExtra(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterExtraSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            var model = schema.ToModel();
+
+            model.Character = character;
+
+            await db.CharacterExtras.AddAsync(model);
+            await db.SaveChangesAsync();
+
+            return TypedResults.Created($"/characters/{id}/extras/{model.Id}", new CharacterExtraSchema(model));
+        }
+
+        private static async Task<Results<Ok<CharacterExtraSchema>, NotFound<string>, BadRequest<string>>> EditExtra(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterExtraSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterExtras.FirstOrDefaultAsync(extra => extra.Id == schema.Id)) is { } model))
+                return TypedResults.BadRequest($"Id: {schema.Id} not found");
+
+            schema.ToModel(model);
+
+            model.Character = character;
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(new CharacterExtraSchema(model));
+        }
+
+        private static async Task<Results<NoContent, NotFound<string>>> DeleteExtra(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, int extraId)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterExtras.FirstOrDefaultAsync(extra => extra.Id == extraId)) is { } model))
+                return TypedResults.NotFound($"Id: {extraId} not found");
+
+            db.Remove(model);
             await db.SaveChangesAsync();
 
             return TypedResults.NoContent();

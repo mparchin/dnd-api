@@ -43,6 +43,9 @@ namespace api.Models
         public CharacterExpert Performance { get; set; } = new("cha");
         public CharacterExpert Persuasion { get; set; } = new("cha");
 
+        public int UsedHitDie { get; set; } = 0;
+        public int UsedHealingSurge { get; set; } = 0;
+        public List<CharacterExtra> Extras { get; } = [];
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]

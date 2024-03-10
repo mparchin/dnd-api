@@ -31,6 +31,7 @@ namespace api
         public DbSet<CharacterExpert> CharacterExperts { get; set; }
         public DbSet<CharacterHitpoint> CharacterHitpoints { get; set; }
         public DbSet<CharacterSpellCasting> CharacterSpellCastings { get; set; }
+        public DbSet<CharacterExtra> CharacterExtras { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>

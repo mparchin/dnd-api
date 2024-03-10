@@ -13,6 +13,6 @@ namespace api.Models
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; }
-        public List<Character> Characters { get; } = new();
+        public List<Character> Characters { get; } = [];
     }
 }
