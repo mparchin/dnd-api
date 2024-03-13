@@ -32,7 +32,7 @@ namespace api
         public DbSet<CharacterHitpoint> CharacterHitpoints { get; set; }
         public DbSet<CharacterSpellCasting> CharacterSpellCastings { get; set; }
         public DbSet<CharacterExtra> CharacterExtras { get; set; }
-
+        public DbSet<Item> Items { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();

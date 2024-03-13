@@ -63,6 +63,7 @@ modelBuilder.EntitySet<Spell>("Spells");
 modelBuilder.EntitySet<Feature>("Features");
 modelBuilder.EntitySet<Feat>("Feats");
 modelBuilder.EntitySet<Rule>("Rules");
+modelBuilder.EntitySet<Item>("Items");
 modelBuilder.EnableLowerCamelCase();
 
 builder.Services.AddControllers()
@@ -125,6 +126,7 @@ app.MapGroup("/features").MapFeaturesApi();
 app.MapGroup("/Feats").MapFeatsApi();
 app.MapGroup("/Rules").MapRulesApi();
 app.MapGroup("/Classes").MapClassesApi();
+app.MapGroup("/Items").MapItemsApi();
 
 app.MapGroup("/Characters")
     .RequireAuthorization(Authorization.User)
