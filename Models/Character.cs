@@ -46,6 +46,7 @@ namespace api.Models
         public int UsedHitDie { get; set; } = 0;
         public int UsedHealingSurge { get; set; } = 0;
         public List<CharacterExtra> Extras { get; } = [];
+        public List<CharacterSpell> Spells { get; set; } = [];
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
