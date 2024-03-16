@@ -61,7 +61,7 @@ namespace api.Endpoints
                     .Include(c => c.Persuasion)
                     .Include(c => c.Extras)
                     .Include(c => c.Spells)
-                    .Include(c => c.Spells.Select(s => s.Spell))
+                    .Include("Spells.Spell")
                     .Where(c => c.UserId == user.Guid)
                     .ToArrayAsync())
                 .Select(character => new CharacterSchema(character))
@@ -163,7 +163,7 @@ namespace api.Endpoints
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
                 .Include(c => c.Spells)
-                .Include(c => c.Spells.Select(s => s.Spell))
+                .Include("Spells.Spell")
                 .Where(c => c.UserId == user.Guid)
                 .FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
 
@@ -222,7 +222,7 @@ namespace api.Endpoints
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
                 .Include(c => c.Spells)
-                .Include(c => c.Spells.Select(s => s.Spell))
+                .Include("Spells.Spell")
                 .Where(m => m.UserId == user.Guid)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model is null)
