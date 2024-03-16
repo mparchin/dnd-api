@@ -8,6 +8,6 @@ namespace api.Models
         [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; }
         public Character Character { get; set; } = new();
-        public Spell Spell { get; set; } = new();
+        public Spell? Spell { get; set; } = new();
     }
 }

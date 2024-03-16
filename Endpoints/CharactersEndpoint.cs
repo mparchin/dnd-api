@@ -61,6 +61,7 @@ namespace api.Endpoints
                     .Include(c => c.Persuasion)
                     .Include(c => c.Extras)
                     .Include(c => c.Spells)
+                    .Include(c => c.Spells.Select(s => s.Spell))
                     .Where(c => c.UserId == user.Guid)
                     .ToArrayAsync())
                 .Select(character => new CharacterSchema(character))
@@ -162,6 +163,7 @@ namespace api.Endpoints
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
                 .Include(c => c.Spells)
+                .Include(c => c.Spells.Select(s => s.Spell))
                 .Where(c => c.UserId == user.Guid)
                 .FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
 
@@ -220,6 +222,7 @@ namespace api.Endpoints
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
                 .Include(c => c.Spells)
+                .Include(c => c.Spells.Select(s => s.Spell))
                 .Where(m => m.UserId == user.Guid)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model is null)
@@ -255,7 +258,11 @@ namespace api.Endpoints
             db.Remove(model.Persuasion);
 
             model.Extras.ForEach(extra => db.Remove(extra));
-            model.Spells.ForEach(spell => db.Remove(spell));
+            model.Spells.ForEach(spell =>
+            {
+                spell.Spell = null;
+                db.Remove(spell);
+            });
 
             db.Remove(model);
 
@@ -369,6 +376,7 @@ namespace api.Endpoints
             if (!((await db.CharacterSpells.FirstOrDefaultAsync(spell => spell.Id == spellId)) is { } model))
                 return TypedResults.NotFound($"Id: {spellId} not found");
 
+            model.Spell = null;
             db.Remove(model);
             await db.SaveChangesAsync();
 
