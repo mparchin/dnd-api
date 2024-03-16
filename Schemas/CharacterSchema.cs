@@ -48,6 +48,7 @@ namespace api.Schemas
         public int UsedHealingSurge { get; set; } = 0;
 
         public List<CharacterExtraSchema> Extras { get; set; } = [];
+        public List<CharacterSpellSchema> Spells { get; set; } = [];
 
         public CharacterSchema()
         {
@@ -99,6 +100,8 @@ namespace api.Schemas
             UsedHitDie = model.UsedHitDie;
             UsedHealingSurge = model.UsedHealingSurge;
             Extras = model.Extras.Select(m => new CharacterExtraSchema(m)).ToList();
+            Spells = model.Spells.Select(s => new CharacterSpellSchema(s)).ToList();
+
 
             Time = new List<long>
             {
