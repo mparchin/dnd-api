@@ -49,7 +49,7 @@ namespace api.Models
         public DamageTypes[] DamageTypes
         {
             get => JsonConvert.DeserializeObject<DamageTypes[]>(DamageTypesString)
-                ?? Array.Empty<DamageTypes>();
+                ?? [];
             set => DamageTypesString = JsonConvert.SerializeObject(value);
         }
         public Actions Action { get; set; }

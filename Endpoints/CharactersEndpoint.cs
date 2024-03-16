@@ -323,7 +323,11 @@ namespace api.Endpoints
             if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
                 return TypedResults.NotFound($"CharId: {id} not found");
 
-            var model = schema.ToModel();
+            if (!((await db.Spells.FirstOrDefaultAsync(s => s.Id == schema.SpellId)) is { } spell))
+                return TypedResults.NotFound($"spellId: {schema.SpellId} not found");
+
+
+            var model = schema.ToModel(spell);
 
             model.Character = character;
 
@@ -343,7 +347,10 @@ namespace api.Endpoints
             if (!((await db.CharacterSpells.FirstOrDefaultAsync(spell => spell.Id == schema.Id)) is { } model))
                 return TypedResults.BadRequest($"Id: {schema.Id} not found");
 
-            schema.ToModel(model);
+            if (!((await db.Spells.FirstOrDefaultAsync(s => s.Id == schema.SpellId)) is { } spell))
+                return TypedResults.NotFound($"spellId: {schema.SpellId} not found");
+
+            schema.ToModel(spell, model);
 
             model.Character = character;
 
