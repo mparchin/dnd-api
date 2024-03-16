@@ -6,6 +6,7 @@ namespace api.Schemas
     {
 
         public bool IsPrepared { get; set; }
+        public int SpellId { get; set; }
         public CharacterSpellSchema()
         {
 
@@ -13,12 +14,14 @@ namespace api.Schemas
 
         public CharacterSpellSchema(CharacterSpell model) : base(model)
         {
+            SpellId = model.Spell.Id;
             IsPrepared = model.IsPrepared;
         }
-        public CharacterSpell ToModel(CharacterSpell? model = null)
+        public CharacterSpell ToModel(Spell spell, CharacterSpell? model = null)
         {
             model ??= new();
             model.IsPrepared = IsPrepared;
+            model.Spell = spell;
             return model;
         }
     }
