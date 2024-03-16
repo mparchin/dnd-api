@@ -33,6 +33,7 @@ namespace api
         public DbSet<CharacterSpellCasting> CharacterSpellCastings { get; set; }
         public DbSet<CharacterExtra> CharacterExtras { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<CharacterSpell> CharacterSpells { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();

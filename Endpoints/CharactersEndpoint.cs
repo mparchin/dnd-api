@@ -19,6 +19,10 @@ namespace api.Endpoints
             group.MapPost("/{id}/extras", CreateExtra);
             group.MapPut("/{id}/extras", EditExtra);
             group.MapDelete("/{id}/extras/{extraId}", DeleteExtra);
+
+            group.MapPost("/{id}/spells", CreateSpell);
+            group.MapPut("/{id}/spells", EditSpell);
+            group.MapDelete("/{id}/spells/{spellId}", DeleteSpell);
         }
 
         private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
@@ -56,6 +60,7 @@ namespace api.Endpoints
                     .Include(c => c.Performance)
                     .Include(c => c.Persuasion)
                     .Include(c => c.Extras)
+                    .Include(c => c.Spells)
                     .Where(c => c.UserId == user.Guid)
                     .ToArrayAsync())
                 .Select(character => new CharacterSchema(character))
@@ -156,6 +161,7 @@ namespace api.Endpoints
                 .Include(c => c.Performance)
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
+                .Include(c => c.Spells)
                 .Where(c => c.UserId == user.Guid)
                 .FirstOrDefaultAsync(c => c.Id == characterSchema.Id);
 
@@ -213,6 +219,7 @@ namespace api.Endpoints
                 .Include(c => c.Performance)
                 .Include(c => c.Persuasion)
                 .Include(c => c.Extras)
+                .Include(c => c.Spells)
                 .Where(m => m.UserId == user.Guid)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model is null)
@@ -248,6 +255,7 @@ namespace api.Endpoints
             db.Remove(model.Persuasion);
 
             model.Extras.ForEach(extra => db.Remove(extra));
+            model.Spells.ForEach(spell => db.Remove(spell));
 
             db.Remove(model);
 
@@ -301,6 +309,58 @@ namespace api.Endpoints
 
             if (!((await db.CharacterExtras.FirstOrDefaultAsync(extra => extra.Id == extraId)) is { } model))
                 return TypedResults.NotFound($"Id: {extraId} not found");
+
+            db.Remove(model);
+            await db.SaveChangesAsync();
+
+            return TypedResults.NoContent();
+        }
+
+        private static async Task<Results<Created<CharacterSpellSchema>, NotFound<string>>> CreateSpell(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterSpellSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            var model = schema.ToModel();
+
+            model.Character = character;
+
+            await db.CharacterSpells.AddAsync(model);
+            await db.SaveChangesAsync();
+
+            return TypedResults.Created($"/characters/{id}/spells/{model.Id}", new CharacterSpellSchema(model));
+        }
+
+        private static async Task<Results<Ok<CharacterSpellSchema>, NotFound<string>, BadRequest<string>>> EditSpell(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterSpellSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterSpells.FirstOrDefaultAsync(spell => spell.Id == schema.Id)) is { } model))
+                return TypedResults.BadRequest($"Id: {schema.Id} not found");
+
+            schema.ToModel(model);
+
+            model.Character = character;
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(new CharacterSpellSchema(model));
+        }
+
+        private static async Task<Results<NoContent, NotFound<string>>> DeleteSpell(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, int spellId)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterSpells.FirstOrDefaultAsync(spell => spell.Id == spellId)) is { } model))
+                return TypedResults.NotFound($"Id: {spellId} not found");
 
             db.Remove(model);
             await db.SaveChangesAsync();

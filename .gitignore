@@ -6,3 +6,4 @@ Properties/
 *.sln
 .git
 *.pem
+.mono/
