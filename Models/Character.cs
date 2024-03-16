@@ -7,7 +7,7 @@ namespace api.Models
         public string Race { get; set; } = "";
         public string Background { get; set; } = "";
         public string? Image { get; set; }
-        public Class Class { get; set; } = new();
+        public Class? Class { get; set; } = new();
         public string SubClassName { get; set; } = "";
         public int Level { get; set; } = 1;
         public CharacterAttributes Attributes { get; set; } = new();

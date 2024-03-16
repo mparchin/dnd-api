@@ -264,6 +264,8 @@ namespace api.Endpoints
                 db.Remove(spell);
             });
 
+            model.Class = null;
+
             db.Remove(model);
 
             await db.SaveChangesAsync();
