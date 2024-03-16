@@ -258,7 +258,11 @@ namespace api.Endpoints
             db.Remove(model.Persuasion);
 
             model.Extras.ForEach(extra => db.Remove(extra));
-            model.Spells.ForEach(spell => db.Remove(spell));
+            model.Spells.ForEach(spell =>
+            {
+                spell.Spell = null;
+                db.Remove(spell);
+            });
 
             db.Remove(model);
 
@@ -372,6 +376,7 @@ namespace api.Endpoints
             if (!((await db.CharacterSpells.FirstOrDefaultAsync(spell => spell.Id == spellId)) is { } model))
                 return TypedResults.NotFound($"Id: {spellId} not found");
 
+            model.Spell = null;
             db.Remove(model);
             await db.SaveChangesAsync();
 
