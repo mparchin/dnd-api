@@ -4,6 +4,7 @@ namespace api.Schemas
 {
     public class CharacterSchema : BaseSchema<Character>
     {
+        public string PlayerName { get; set; } = "";
         public string Name { get; set; } = "";
         public string Race { get; set; } = "";
         public string Background { get; set; } = "";
@@ -58,6 +59,7 @@ namespace api.Schemas
         public CharacterSchema(Character model) : base(model)
         {
             Name = model.Name;
+            PlayerName = model.PlayerName;
             Race = model.Race;
             Background = model.Background;
             Image = model.Image;
@@ -163,6 +165,7 @@ namespace api.Schemas
             return new()
             {
                 Name = Name,
+                PlayerName = PlayerName,
                 Race = Race,
                 Background = Background,
                 Image = Image,
@@ -218,6 +221,7 @@ namespace api.Schemas
             CharacterExpert deception, CharacterExpert intimidation, CharacterExpert performance, CharacterExpert persuasion)
         {
             model.Name = Name;
+            model.PlayerName = PlayerName;
             model.Race = Race;
             model.Background = Background;
             model.Image = Image;

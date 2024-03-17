@@ -121,6 +121,7 @@ namespace api.Endpoints
             await db.SaveChangesAsync();
 
             model.UserId = user.Guid;
+            model.PlayerName = user.Name;
             await db.Characters.AddAsync(model);
 
             await db.SaveChangesAsync();
@@ -179,6 +180,7 @@ namespace api.Endpoints
                 model.Deception, model.Intimidation, model.Performance, model.Persuasion);
 
             model.UpdatedOn = DateTime.UtcNow;
+            model.PlayerName = user.Name;
 
             if ((await db.Classes.FirstOrDefaultAsync(c => c.Id == characterSchema.Class.Id)) is { } newClass)
                 model.Class = newClass;
