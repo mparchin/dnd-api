@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 var imagesPath = builder.Configuration.GetValue<string>("IMAGES_PATH") ?? "Images/";
 var apiUrl = builder.Configuration.GetValue<string>("API_URL") ?? "http://localhost:5056";
 
+Directory.CreateDirectory(imagesPath);
+
 Console.WriteLine($"Running app in {builder.Environment.EnvironmentName} mode");
 
 builder.Logging.ClearProviders();
