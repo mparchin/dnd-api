@@ -142,7 +142,7 @@ app.MapGroup("/Characters")
     .RequireAuthorization(Authorization.User)
     .MapCharactersApi();
 
-app.MapGroup("/Images")
+app.MapGroup("/Upload")
     .RequireAuthorization(Authorization.User)
     .MapImagesApi(imagesPath, apiUrl);
 
