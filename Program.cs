@@ -6,10 +6,14 @@ using api.Models;
 using authority;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var imagesPath = builder.Configuration.GetValue<string>("IMAGES_PATH") ?? "Images/";
+var apiUrl = builder.Configuration.GetValue<string>("API_URL") ?? "http://localhost:5056";
 
 Console.WriteLine($"Running app in {builder.Environment.EnvironmentName} mode");
 
@@ -102,13 +106,17 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
-
 app.UseCors(builder =>
 {
     builder.AllowAnyHeader();
     builder.AllowAnyMethod();
     builder.AllowAnyOrigin();
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    RequestPath = "/" + imagesPath.TrimEnd('/').TrimStart('/'),
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, imagesPath))
 });
 
 app.UseAuthentication();
@@ -131,6 +139,10 @@ app.MapGroup("/Items").MapItemsApi();
 app.MapGroup("/Characters")
     .RequireAuthorization(Authorization.User)
     .MapCharactersApi();
+
+app.MapGroup("/Images")
+    .RequireAuthorization(Authorization.User)
+    .MapImagesApi(imagesPath, apiUrl);
 
 app.MapControllers();
 
