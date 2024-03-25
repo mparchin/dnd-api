@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var imagesPath = builder.Configuration.GetValue<string>("IMAGES_PATH") ?? "Images/";
 var apiUrl = builder.Configuration.GetValue<string>("API_URL") ?? "http://localhost:5056";
+var swaggerisAvailable = builder.Configuration.GetValue<bool>("SWAGGER_ENABLED");
 
 Directory.CreateDirectory(imagesPath);
 
@@ -124,7 +125,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
+if (swaggerisAvailable)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
