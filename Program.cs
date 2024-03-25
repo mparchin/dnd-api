@@ -144,6 +144,7 @@ app.MapGroup("/Characters")
     .MapCharactersApi();
 
 app.MapGroup("/Upload")
+    .DisableAntiforgery()
     .RequireAuthorization(Authorization.User)
     .MapImagesApi(imagesPath, apiUrl);
 
