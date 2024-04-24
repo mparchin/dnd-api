@@ -35,6 +35,8 @@ namespace api
         public DbSet<Item> Items { get; set; }
         public DbSet<CharacterSpell> CharacterSpells { get; set; }
         public DbSet<CharacterAttack> CharacterAttacks { get; set; }
+        public DbSet<CharacterItem> CharacterItems { get; set; }
+        public DbSet<ItemEffect> ItemEffects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) =>
             modelBuilder.UseIdentityAlwaysColumns();
