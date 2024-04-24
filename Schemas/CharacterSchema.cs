@@ -50,6 +50,13 @@ namespace api.Schemas
 
         public List<CharacterExtraSchema> Extras { get; set; } = [];
         public List<CharacterSpellSchema> Spells { get; set; } = [];
+        public List<CharacterAttackSchema> Attacks { get; set; } = [];
+        public List<CharacterItemSchema> Items { get; set; } = [];
+
+        public int CopperCoins { get; set; } = 0;
+        public int SilverCoins { get; set; } = 0;
+        public int GoldCoins { get; set; } = 0;
+        public int PlatinumCoins { get; set; } = 0;
 
         public CharacterSchema()
         {
@@ -103,7 +110,13 @@ namespace api.Schemas
             UsedHealingSurge = model.UsedHealingSurge;
             Extras = model.Extras.Select(m => new CharacterExtraSchema(m)).ToList();
             Spells = model.Spells.Select(s => new CharacterSpellSchema(s)).ToList();
+            Attacks = model.Attacks.Select(a => new CharacterAttackSchema(a)).ToList();
+            Items = model.Items.Select(i => new CharacterItemSchema(i)).ToList();
 
+            CopperCoins = model.CopperCoins;
+            SilverCoins = model.SilverCoins;
+            GoldCoins = model.GoldCoins;
+            PlatinumCoins = model.PlatinumCoins;
 
             Time = new List<long>
             {
@@ -207,6 +220,11 @@ namespace api.Schemas
 
                 UsedHitDie = UsedHitDie,
                 UsedHealingSurge = UsedHealingSurge,
+
+                CopperCoins = CopperCoins,
+                SilverCoins = SilverCoins,
+                GoldCoins = GoldCoins,
+                PlatinumCoins = PlatinumCoins,
             };
         }
 
@@ -263,6 +281,11 @@ namespace api.Schemas
 
             model.UsedHitDie = UsedHitDie;
             model.UsedHealingSurge = UsedHealingSurge;
+
+            model.CopperCoins = CopperCoins;
+            model.SilverCoins = SilverCoins;
+            model.GoldCoins = GoldCoins;
+            model.PlatinumCoins = PlatinumCoins;
         }
     }
 }

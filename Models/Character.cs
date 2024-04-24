@@ -48,6 +48,14 @@ namespace api.Models
         public int UsedHealingSurge { get; set; } = 0;
         public List<CharacterExtra> Extras { get; } = [];
         public List<CharacterSpell> Spells { get; set; } = [];
+        public List<CharacterAttack> Attacks { get; set; } = [];
+        public List<CharacterItem> Items { get; set; } = [];
+
+        public int CopperCoins { get; set; } = 0;
+        public int SilverCoins { get; set; } = 0;
+        public int GoldCoins { get; set; } = 0;
+        public int PlatinumCoins { get; set; } = 0;
+
 
         [System.Text.Json.Serialization.JsonIgnore]
         [Newtonsoft.Json.JsonIgnore]
