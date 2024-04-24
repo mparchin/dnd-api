@@ -23,6 +23,10 @@ namespace api.Endpoints
             group.MapPost("/{id}/spells", CreateSpell);
             group.MapPut("/{id}/spells", EditSpell);
             group.MapDelete("/{id}/spells/{spellId}", DeleteSpell);
+
+            group.MapPost("/{id}/attacks", CreateAttack);
+            group.MapPut("/{id}/attacks", EditAttack);
+            group.MapDelete("/{id}/attacks/{attackId}", DeleteAttack);
         }
 
         private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
@@ -381,6 +385,58 @@ namespace api.Endpoints
                 return TypedResults.NotFound($"Id: {spellId} not found");
 
             model.Spell = null;
+            db.Remove(model);
+            await db.SaveChangesAsync();
+
+            return TypedResults.NoContent();
+        }
+
+        private static async Task<Results<Created<CharacterAttackSchema>, NotFound<string>>> CreateAttack(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterAttackSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            var model = schema.ToModel();
+
+            model.Character = character;
+
+            await db.CharacterAttacks.AddAsync(model);
+            await db.SaveChangesAsync();
+
+            return TypedResults.Created($"/characters/{id}/attacks/{model.Id}", new CharacterAttackSchema(model));
+        }
+
+        private static async Task<Results<Ok<CharacterAttackSchema>, NotFound<string>, BadRequest<string>>> EditAttack(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, CharacterAttackSchema schema)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterAttacks.FirstOrDefaultAsync(attack => attack.Id == schema.Id)) is { } model))
+                return TypedResults.BadRequest($"Id: {schema.Id} not found");
+
+            schema.ToModel(model);
+
+            model.Character = character;
+
+            await db.SaveChangesAsync();
+
+            return TypedResults.Ok(new CharacterAttackSchema(model));
+        }
+
+        private static async Task<Results<NoContent, NotFound<string>>> DeleteAttack(Db db,
+            ClaimsPrincipal claimsPrincipal, int id, int attackId)
+        {
+            var user = claimsPrincipal.GetUser();
+            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
+                return TypedResults.NotFound($"CharId: {id} not found");
+
+            if (!((await db.CharacterAttacks.FirstOrDefaultAsync(attack => attack.Id == attackId)) is { } model))
+                return TypedResults.NotFound($"Id: {attackId} not found");
+
             db.Remove(model);
             await db.SaveChangesAsync();
 
