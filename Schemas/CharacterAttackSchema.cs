@@ -12,6 +12,7 @@ namespace api.Schemas
         public string DamageExtra { get; set; } = "";
         public string SaveAttribute { get; set; } = "";
         public string CustomSaveDC { get; set; } = "";
+        public string DamageType { get; set; } = "";
         public CharacterAttackSchema()
         {
 
@@ -27,6 +28,7 @@ namespace api.Schemas
             DamageExtra = model.DamageExtra;
             CustomSaveDC = model.CustomSaveDC;
             SaveAttribute = model.SaveAttribute;
+            DamageType = model.DamageType;
         }
 
         public CharacterAttack ToModel(CharacterAttack? model = null)
@@ -40,6 +42,7 @@ namespace api.Schemas
             model.DamageExtra = DamageExtra;
             model.CustomSaveDC = CustomSaveDC;
             model.SaveAttribute = SaveAttribute;
+            model.DamageType = DamageType;
             return model;
         }
     }
