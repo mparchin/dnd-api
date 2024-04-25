@@ -31,10 +31,6 @@ namespace api.Endpoints
             group.MapPost("/{id}/items", CreateItem);
             group.MapPut("/{id}/items", EditItem);
             group.MapDelete("/{id}/items/{itemId}", DeleteItem);
-
-            group.MapPost("/{id}/items/{itemId}/effects", CreateItemEffect);
-            group.MapPut("/{id}/items/{itemId}/effects", EditItemEffect);
-            group.MapDelete("/{id}/items/{itemId}/effects/{effectId}", DeleteItemEffect);
         }
 
         private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
@@ -480,6 +476,19 @@ namespace api.Endpoints
             await db.CharacterItems.AddAsync(model);
             await db.SaveChangesAsync();
 
+            schema.Effects.ForEach(effect =>
+            {
+                var effectModel = effect.ToModel();
+                effectModel.Item = model;
+                db.ItemEffects.Add(effectModel);
+            });
+
+            await db.SaveChangesAsync();
+
+            model = await db.CharacterItems
+                    .Include(item => item.Effects)
+                    .FirstOrDefaultAsync(item => item.Id == schema.Id && item.Character == character) ?? model;
+
             return TypedResults.Created($"/characters/{id}/items/{model.Id}", new CharacterItemSchema(model));
         }
 
@@ -496,10 +505,43 @@ namespace api.Endpoints
                 return TypedResults.BadRequest($"Id: {schema.Id} not found");
 
             schema.ToModel(model);
-
             model.Character = character;
 
+            //create new effects
+            schema.Effects.Where(e => e.Id == 0)
+                .ToList()
+                .ForEach(effect =>
+                {
+                    var effectModel = effect.ToModel();
+                    effectModel.Item = model;
+                    db.ItemEffects.Add(effectModel);
+                });
+
+            //update old effects
+            schema.Effects.Where(e => e.Id != 0)
+                .ToList()
+                .ForEach(effect => effect.ToModel(db.ItemEffects.FirstOrDefault(e => e.Id == effect.Id)));
+
+            //remove old effects
+            var schemaEffectIds = schema.Effects.Where(e => e.Id == 0)
+                .Select(e => e.Id)
+                .ToList();
+            var modelEffectIds = model.Effects.Select(e => e.Id)
+                .ToList();
+            var deletedIds = modelEffectIds.Where(m => schemaEffectIds.All(s => s != m))
+                .ToList();
+            deletedIds.ForEach(id =>
+            {
+                var effect = db.ItemEffects.FirstOrDefault(e => e.Id == id);
+                if (effect is { })
+                    db.ItemEffects.Remove(effect);
+            });
+
             await db.SaveChangesAsync();
+
+            model = await db.CharacterItems
+                    .Include(item => item.Effects)
+                    .FirstOrDefaultAsync(item => item.Id == schema.Id && item.Character == character) ?? model;
 
             return TypedResults.Ok(new CharacterItemSchema(model));
         }
@@ -517,67 +559,6 @@ namespace api.Endpoints
                 return TypedResults.NotFound($"Id: {itemId} not found");
 
             model.Effects.ForEach(effect => db.Remove(effect));
-            db.Remove(model);
-            await db.SaveChangesAsync();
-
-            return TypedResults.NoContent();
-        }
-
-        private static async Task<Results<Created<ItemEffectSchema>, NotFound<string>>> CreateItemEffect(Db db,
-            ClaimsPrincipal claimsPrincipal, int id, int itemId, ItemEffectSchema schema)
-        {
-            var user = claimsPrincipal.GetUser();
-            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
-                return TypedResults.NotFound($"CharId: {id} not found");
-
-            if (!((await db.CharacterItems.FirstOrDefaultAsync(i => i.Id == itemId && i.Character == character)) is { } characterItem))
-                return TypedResults.NotFound($"ItemId: {itemId} not found");
-
-            var model = schema.ToModel();
-            model.Item = characterItem;
-
-            await db.ItemEffects.AddAsync(model);
-            await db.SaveChangesAsync();
-
-            return TypedResults.Created($"/characters/{id}/items/{itemId}/effects/{model.Id}", new ItemEffectSchema(model));
-        }
-
-        private static async Task<Results<Ok<ItemEffectSchema>, NotFound<string>, BadRequest<string>>> EditItemEffect(Db db,
-            ClaimsPrincipal claimsPrincipal, int id, int itemId, ItemEffectSchema schema)
-        {
-            var user = claimsPrincipal.GetUser();
-            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
-                return TypedResults.NotFound($"CharId: {id} not found");
-
-            if (!((await db.CharacterItems.FirstOrDefaultAsync(i => i.Id == itemId && i.Character == character)) is { } characterItem))
-                return TypedResults.NotFound($"ItemId: {itemId} not found");
-
-            if (!((await db.ItemEffects
-                    .FirstOrDefaultAsync(effect => effect.Id == schema.Id && effect.Item == characterItem)) is { } model))
-                return TypedResults.BadRequest($"Id: {schema.Id} not found");
-
-            schema.ToModel(model);
-            model.Item = characterItem;
-
-            await db.SaveChangesAsync();
-
-            return TypedResults.Ok(new ItemEffectSchema(model));
-        }
-
-        private static async Task<Results<NoContent, NotFound<string>>> DeleteItemEffect(Db db,
-            ClaimsPrincipal claimsPrincipal, int id, int itemId, int effectId)
-        {
-            var user = claimsPrincipal.GetUser();
-            if (!((await db.Characters.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Guid)) is { } character))
-                return TypedResults.NotFound($"CharId: {id} not found");
-
-            if (!((await db.CharacterItems.FirstOrDefaultAsync(i => i.Id == itemId && i.Character == character)) is { } characterItem))
-                return TypedResults.NotFound($"ItemId: {itemId} not found");
-
-            if (!((await db.ItemEffects
-                    .FirstOrDefaultAsync(effect => effect.Id == effectId && effect.Item == characterItem)) is { } model))
-                return TypedResults.NotFound($"Id: {effectId} not found");
-
             db.Remove(model);
             await db.SaveChangesAsync();
 
