@@ -15,5 +15,6 @@ namespace api.Models
         public string DamageExtra { get; set; } = "";
         public string SaveAttribute { get; set; } = "";
         public string CustomSaveDC { get; set; } = "";
+        public string DamageType { get; set; } = "";
     }
 }
