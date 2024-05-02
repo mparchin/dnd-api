@@ -4,6 +4,7 @@ namespace api.Models
     public class CharacterExpert(string attributeName = "") : IModel
     {
         public bool HasAdvantage { get; set; }
+        public bool HasDisAdvantage { get; set; }
         public bool IsProficient { get; set; }
         public bool IsExpert { get; set; }
         public string AttributeName { get; set; } = attributeName;

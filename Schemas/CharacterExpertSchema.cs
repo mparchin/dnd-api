@@ -5,6 +5,7 @@ namespace api.Schemas
     public class CharacterExpertSchema : BaseSchema<CharacterExpert>
     {
         public bool HasAdvantage { get; set; }
+        public bool HasDisAdvantage { get; set; }
         public bool IsProficient { get; set; }
         public bool IsExpert { get; set; }
         public string AttributeName { get; set; } = "";
@@ -18,6 +19,7 @@ namespace api.Schemas
         public CharacterExpertSchema(CharacterExpert model) : base(model)
         {
             HasAdvantage = model.HasAdvantage;
+            HasDisAdvantage = model.HasDisAdvantage;
             IsProficient = model.IsProficient;
             IsExpert = model.IsExpert;
             AttributeName = model.AttributeName;
@@ -28,6 +30,7 @@ namespace api.Schemas
         {
             model ??= new();
             model.HasAdvantage = HasAdvantage;
+            model.HasDisAdvantage = HasDisAdvantage;
             model.IsProficient = IsProficient;
             model.IsExpert = IsExpert;
             model.AttributeName = AttributeName;
