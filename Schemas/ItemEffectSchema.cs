@@ -4,7 +4,7 @@ namespace api.Schemas
 {
     public class ItemEffectSchema : BaseSchema<ItemEffect>
     {
-        public string Name { get; set; } = "";
+        public Effect Effect { get; set; }
         public string Extra { get; set; } = "";
         public ItemEffectSchema()
         {
@@ -13,14 +13,14 @@ namespace api.Schemas
 
         public ItemEffectSchema(ItemEffect model) : base(model)
         {
-            Name = model.Name;
+            Effect = model.Effect;
             Extra = model.Extra;
         }
 
         public ItemEffect ToModel(ItemEffect? model = null)
         {
             model ??= new();
-            model.Name = Name;
+            model.Effect = Effect;
             model.Extra = Extra;
             return model;
         }

@@ -9,6 +9,7 @@ namespace api.Schemas
         public string Description { get; set; } = "";
         public bool NeedsAttunment { get; set; } = false;
         public bool IsAttuned { get; set; } = false;
+        public bool IsEquipped { get; set; } = false;
         public double? Weight { get; set; }
         public double? Cost { get; set; }
         public int Quantity { get; set; } = 1;
@@ -26,6 +27,7 @@ namespace api.Schemas
             Description = model.Description;
             NeedsAttunment = model.NeedsAttunment;
             IsAttuned = model.IsAttuned;
+            IsEquipped = model.IsEquipped;
             Weight = model.Weight;
             Cost = model.Cost;
             Quantity = model.Quantity;
@@ -40,6 +42,7 @@ namespace api.Schemas
             model.Description = Description;
             model.NeedsAttunment = NeedsAttunment;
             model.IsAttuned = IsAttuned;
+            model.IsEquipped = IsEquipped;
             model.Weight = Weight;
             model.Cost = Cost;
             model.Quantity = Quantity;

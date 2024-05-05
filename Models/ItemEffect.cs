@@ -7,7 +7,7 @@ namespace api.Models
         [Newtonsoft.Json.JsonIgnore]
         public DateTime? UpdatedOn { get; set; }
         public CharacterItem Item { get; set; } = new();
-        public string Name { get; set; } = "";
+        public Effect Effect { get; set; }
         public string Extra { get; set; } = "";
     }
 }
