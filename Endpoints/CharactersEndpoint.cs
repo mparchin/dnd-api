@@ -507,6 +507,21 @@ namespace api.Endpoints
             schema.ToModel(model);
             model.Character = character;
 
+            //remove old effects
+            var schemaEffectIds = schema.Effects.Where(e => e.Id != 0)
+                .Select(e => e.Id)
+                .ToList();
+            var modelEffectIds = model.Effects.Select(e => e.Id)
+                .ToList();
+            var deletedIds = modelEffectIds.Where(m => schemaEffectIds.All(s => s != m))
+                .ToList();
+            deletedIds.ForEach(id =>
+            {
+                var effect = db.ItemEffects.FirstOrDefault(e => e.Id == id);
+                if (effect is { })
+                    db.ItemEffects.Remove(effect);
+            });
+
             //create new effects
             schema.Effects.Where(e => e.Id == 0)
                 .ToList()
@@ -521,21 +536,6 @@ namespace api.Endpoints
             schema.Effects.Where(e => e.Id != 0)
                 .ToList()
                 .ForEach(effect => effect.ToModel(db.ItemEffects.FirstOrDefault(e => e.Id == effect.Id)));
-
-            //remove old effects
-            var schemaEffectIds = schema.Effects.Where(e => e.Id == 0)
-                .Select(e => e.Id)
-                .ToList();
-            var modelEffectIds = model.Effects.Select(e => e.Id)
-                .ToList();
-            var deletedIds = modelEffectIds.Where(m => schemaEffectIds.All(s => s != m))
-                .ToList();
-            deletedIds.ForEach(id =>
-            {
-                var effect = db.ItemEffects.FirstOrDefault(e => e.Id == id);
-                if (effect is { })
-                    db.ItemEffects.Remove(effect);
-            });
 
             await db.SaveChangesAsync();
 
