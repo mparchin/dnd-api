@@ -102,5 +102,7 @@ namespace api.Models
         DisAdvantageOnIntimidation,
         DisAdvantageOnPerformance,
         DisAdvantageOnPersuasion,
+        AdvantageOnInitiative,
+        DisAdvantageOnInitiative,
     }
 }
