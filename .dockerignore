@@ -8,3 +8,5 @@ appsettings*
 .git*
 *.sh
 Dockerfile
+
+*.json
