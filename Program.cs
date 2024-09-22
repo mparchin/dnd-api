@@ -12,30 +12,36 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+bool updateMode = args.Contains("update");
+
 var imagesPath = builder.Configuration.GetValue<string>("IMAGES_PATH") ?? "Images/";
 var apiUrl = builder.Configuration.GetValue<string>("API_URL") ?? "http://localhost:5056";
 var swaggerisAvailable = builder.Configuration.GetValue<bool>("SWAGGER_ENABLED");
 
 Directory.CreateDirectory(imagesPath);
 
-Console.WriteLine($"Running app in {builder.Environment.EnvironmentName} mode");
+Console.WriteLine(updateMode
+    ? $"Updating app in {builder.Environment.EnvironmentName} mode"
+    : $"Running app in {builder.Environment.EnvironmentName} mode");
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+if (!updateMode)
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JSON Web Token based security"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement{
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JSON Web Token based security"
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement{
         {
         new OpenApiSecurityScheme
         {
@@ -47,8 +53,9 @@ builder.Services.AddSwaggerGen(options =>
         },
         Array.Empty<string>()
     }
+        });
     });
-});
+}
 
 if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<Db>(options =>
@@ -59,39 +66,42 @@ if (builder.Environment.IsDevelopment())
 else
     builder.Services.AddDbContext<Db>(options => options.UseNpgsql(Db.GetProductionDbConnetion(builder)));
 
-builder.Services.AddCors();
+if (!updateMode)
+{
 
-var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntitySet<Class>("Classes");
-modelBuilder.EntitySet<Condition>("Conditions");
-modelBuilder.EntitySet<School>("Schools");
-modelBuilder.EntitySet<SpellTag>("SpellTags");
-modelBuilder.EntitySet<Spell>("Spells");
-modelBuilder.EntitySet<Feature>("Features");
-modelBuilder.EntitySet<Feat>("Feats");
-modelBuilder.EntitySet<Rule>("Rules");
-modelBuilder.EntitySet<Item>("Items");
-modelBuilder.EntitySet<Race>("Races");
-modelBuilder.EntitySet<Background>("Backgrounds");
-modelBuilder.EnableLowerCamelCase();
+    builder.Services.AddCors();
 
-builder.Services.AddControllers()
-                .AddJsonOptions(opt =>
-                {
-                    opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-                })
-                .AddOData(options => options.Select()
-                                            .Filter()
-                                            .OrderBy()
-                                            .Expand()
-                                            .Count()
-                                            .SetMaxTop(null)
-                                            .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
+    var modelBuilder = new ODataConventionModelBuilder();
+    modelBuilder.EntitySet<Class>("Classes");
+    modelBuilder.EntitySet<Condition>("Conditions");
+    modelBuilder.EntitySet<School>("Schools");
+    modelBuilder.EntitySet<SpellTag>("SpellTags");
+    modelBuilder.EntitySet<Spell>("Spells");
+    modelBuilder.EntitySet<Feature>("Features");
+    modelBuilder.EntitySet<Feat>("Feats");
+    modelBuilder.EntitySet<Rule>("Rules");
+    modelBuilder.EntitySet<Item>("Items");
+    modelBuilder.EntitySet<Race>("Races");
+    modelBuilder.EntitySet<Background>("Backgrounds");
+    modelBuilder.EnableLowerCamelCase();
 
-builder.AddJWTAuthentication();
-builder.Services.AddAuthorization(options => options.AddPolicies());
+    builder.Services.AddControllers()
+                    .AddJsonOptions(opt =>
+                    {
+                        opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                        opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    })
+                    .AddOData(options => options.Select()
+                                                .Filter()
+                                                .OrderBy()
+                                                .Expand()
+                                                .Count()
+                                                .SetMaxTop(null)
+                                                .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 
+    builder.AddJWTAuthentication();
+    builder.Services.AddAuthorization(options => options.AddPolicies());
+}
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -107,6 +117,16 @@ using (var scope = app.Services.CreateScope())
             await db.SeedSpellTagsAsync();
             await db.SeedSpellsAsync();
             await db.SeedFeatsAsync();
+        }
+        if (updateMode)
+        {
+            if (scope.ServiceProvider.GetService<ILogger<Update>>() is { } logger)
+            {
+                logger.LogInformation("Update starting");
+                logger.LogInformation($"Fetching spells at {builder.Configuration.GetValue<string>("5E_SPELLS_URL")}");
+                logger.LogInformation($"Fetching lookup at {builder.Configuration.GetValue<string>("5E_SPELLS_LOOKUP_URL")}");
+            }
+            return;
         }
     }
 }
