@@ -6,20 +6,22 @@ namespace api
 {
     public class Updater(ILogger<Updater> logger, string spellPath)
     {
-        private async Task<SpellList> FetchSpells()
+        private async Task<List<Spell>> FetchSpells()
         {
             logger.LogInformation($"Fetching spells from {spellPath}");
 
-            var spells = JsonSerializer.Deserialize<SpellList>(await File.ReadAllTextAsync(spellPath));
+            var txt = await File.ReadAllTextAsync(spellPath);
+            logger.LogInformation($"Read {txt.Length} chars from {spellPath}");
+            var spellList = JsonSerializer.Deserialize<SpellList>(txt);
 
-            if (spells is null || spells.Spell.Count == 0)
+            if (spellList is null)
             {
                 logger.LogCritical("Zero spells found");
                 throw new Exception("Zero spells found");
             }
-            logger.LogInformation($"Fetched {spells.Spell.Count} spells from {spellPath}");
+            logger.LogInformation($"Fetched {spellList.Spell.Count} spells from {spellPath}");
 
-            return spells;
+            return spellList.Spell;
         }
 
         public async Task RunAsync()
