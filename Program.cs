@@ -17,6 +17,8 @@ bool updateMode = args.Contains("update");
 var imagesPath = builder.Configuration.GetValue<string>("IMAGES_PATH") ?? "Images/";
 var apiUrl = builder.Configuration.GetValue<string>("API_URL") ?? "http://localhost:5056";
 var swaggerisAvailable = builder.Configuration.GetValue<bool>("SWAGGER_ENABLED");
+var FiveESpellUrl = builder.Configuration.GetValue<string>("5E_SPELLS_URL") ?? "";
+var FiveELookupUrl = builder.Configuration.GetValue<string>("5E_SPELLS_LOOKUP_URL") ?? "";
 
 Directory.CreateDirectory(imagesPath);
 
@@ -120,11 +122,11 @@ using (var scope = app.Services.CreateScope())
         }
         if (updateMode)
         {
-            if (scope.ServiceProvider.GetService<ILogger<Update>>() is { } logger)
+            if (scope.ServiceProvider.GetService<ILogger<Updater>>() is { } logger)
             {
                 logger.LogInformation("Update starting");
-                logger.LogInformation($"Fetching spells at {builder.Configuration.GetValue<string>("5E_SPELLS_URL")}");
-                logger.LogInformation($"Fetching lookup at {builder.Configuration.GetValue<string>("5E_SPELLS_LOOKUP_URL")}");
+                using var updater = new Updater(logger, FiveESpellUrl, FiveELookupUrl);
+                await updater.RunAsync();
             }
             return;
         }
