@@ -168,6 +168,8 @@ app.MapGroup("/Characters")
     .RequireAuthorization(Authorization.User)
     .MapCharactersApi();
 
+app.MapGet("/Characters/{userId}", CharactersEndpoint.GetAllUserCharactersAsync);
+
 app.MapGroup("/Images")
     .DisableAntiforgery()
     .RequireAuthorization(Authorization.User)
