@@ -33,6 +33,55 @@ namespace api.Endpoints
             group.MapDelete("/{id}/items/{itemId}", DeleteItem);
         }
 
+        public static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllUserCharactersAsync(Db db,
+            string userId, long lastTime = long.MinValue)
+        {
+            var guid = Guid.Parse(userId);
+            var characters = (await db.Characters
+                    .Include(c => c.Class)
+                    .Include(c => c.Attributes)
+                    .Include(c => c.Hp)
+                    .Include(c => c.SpellCasting)
+                    .Include(c => c.Inititive)
+                    .Include(c => c.StrengthSave)
+                    .Include(c => c.DextritySave)
+                    .Include(c => c.ConstitutionSave)
+                    .Include(c => c.IntelligenceSave)
+                    .Include(c => c.WisdomSave)
+                    .Include(c => c.CharismaSave)
+                    .Include(c => c.Athletics)
+                    .Include(c => c.Acrobatics)
+                    .Include(c => c.SleightOfHands)
+                    .Include(c => c.Stealth)
+                    .Include(c => c.Arcana)
+                    .Include(c => c.History)
+                    .Include(c => c.Investigation)
+                    .Include(c => c.Nature)
+                    .Include(c => c.Religion)
+                    .Include(c => c.AnimalHandling)
+                    .Include(c => c.Insight)
+                    .Include(c => c.Medicine)
+                    .Include(c => c.Perception)
+                    .Include(c => c.Survival)
+                    .Include(c => c.Deception)
+                    .Include(c => c.Intimidation)
+                    .Include(c => c.Performance)
+                    .Include(c => c.Persuasion)
+                    .Include(c => c.Extras)
+                    .Include(c => c.Spells)
+                    .Include("Spells.Spell")
+                    .Include(c => c.Attacks)
+                    .Include(c => c.Items)
+                    .Include("Items.Effects")
+                    .Where(c => c.UserId == guid)
+                    .ToArrayAsync())
+                .Select(character => new CharacterSchema(character))
+                .ToArray();
+            if (characters.Length != 0 && characters.Max(character => character.Time) > lastTime)
+                return TypedResults.Ok(characters);
+            return TypedResults.NoContent();
+        }
+
         private static async Task<Results<Ok<CharacterSchema[]>, NoContent>> GetAllAsync(Db db,
             ClaimsPrincipal claimsPrincipal, long lastTime = long.MinValue)
         {
