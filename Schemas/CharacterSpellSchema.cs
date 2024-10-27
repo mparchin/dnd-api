@@ -8,6 +8,8 @@ namespace api.Schemas
         public bool IsPrepared { get; set; }
         public bool IsAlwaysPrepared { get; set; }
         public int SpellId { get; set; }
+        public string Name { get; set; } = "";
+        public int Level { get; set; }
         public CharacterSpellSchema()
         {
 
@@ -18,6 +20,8 @@ namespace api.Schemas
             SpellId = model.Spell?.Id ?? 0;
             IsPrepared = model.IsPrepared;
             IsAlwaysPrepared = model.IsAlwaysPrepared;
+            Name = model.Spell?.Name ?? "";
+            Level = model.Spell?.Level ?? 0;
         }
         public CharacterSpell ToModel(Spell spell, CharacterSpell? model = null)
         {
